@@ -5,8 +5,14 @@ using UnityEngine;
 using Newtonsoft.Json;
 
 namespace SCPNewView.Saving.Serialization {
+    /* JSON Serializer Overview
+     * - Serialized private fields are NOT saved
+     * - Properties, manual backing fields or not ARE saved
+     * - Public fields ARE saved
+     * - Non serialized private fields ARE saved
+     */
     public class JSONSerializer : ISerializer {
-        public string Serialize(object toSerialize) {
+        public object Serialize(object toSerialize) {
             try {
                 string output = JsonConvert.SerializeObject(toSerialize);
                 return output;
@@ -15,9 +21,9 @@ namespace SCPNewView.Saving.Serialization {
                 return null;
             }
         }
-        public object Deserialize<T>(string toDeserialize) {
+        public object Deserialize<T>(object toDeserialize) {
             try {
-                T output = JsonConvert.DeserializeObject<T>(toDeserialize);
+                T output = JsonConvert.DeserializeObject<T>((string)toDeserialize);
                 return output;
             } catch (Exception err) {
                 Debug.LogException(err);
