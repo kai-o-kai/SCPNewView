@@ -16,6 +16,7 @@ namespace SCPNewView.Saving {
             Debug.Log(loaded.ToString());
         }
     }
+    // TODO : This class needs to test members with other accessibility modifiers. Try private fields, auto-properties, serializedfields, etc.
     [System.Serializable]
     public class SampleSaveClass {
         public string a;
