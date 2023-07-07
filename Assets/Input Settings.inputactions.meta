@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 72e17b9f227acf24d9a11a0d8d7b5212
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 8404be70184654265930450def6a9037, type: 3}
+  generateWrapperCode: 1
+  wrapperCodePath: Assets/Input Settings.cs
+  wrapperClassName: 
+  wrapperCodeNamespace: SCPNewView
