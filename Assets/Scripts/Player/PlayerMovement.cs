@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using SCPNewView.Saving;
 
 namespace SCPNewView {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerMovement : MonoBehaviour {
+    public class PlayerMovement : MonoBehaviour, IDataPersisting {
         public static PlayerMovement Instance { get; private set; }
 
         public Vector2 ExternalForces {
@@ -33,7 +34,6 @@ namespace SCPNewView {
         }
         void Update() {
             DampExternalForces();
-            DataPersistenceManager.Current.PlayerData.Position = _rb.position;
         }
         void FixedUpdate() {
             Vector2 moveVector = _inputActions.Player.Movement.ReadValue<Vector2>().normalized;
@@ -62,6 +62,9 @@ namespace SCPNewView {
             dir.x = Random.Range(-15f, 15f);
             dir.y = Random.Range(-15f, 15f);
             ExternalForces = dir;
+        }
+        public void OnGameSave() {
+            DataPersistenceManager.Current.PlayerData.Position = _rb.position;
         }
     }
 }

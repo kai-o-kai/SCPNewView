@@ -1,18 +1,18 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using SCPNewView.Saving;
 using UnityEngine;
 
-namespace SCPNewView {
+namespace SCPNewView.Saving {
     public static class DataPersistenceManager {
         public static GameData Current {
             get {
                 if (s_current == null) {
-                    GameData loaded = (GameData)SaveManager.LoadGame<GameData>("Data/gameData");
+                    GameData loaded = (GameData)SaveManager.LoadGame<GameData>("Data/gameData.save");
                     if (loaded == null) { loaded = new GameData(); }
                     s_current = loaded;
-                    Save();
                 }
                 return s_current;
             }
@@ -22,25 +22,38 @@ namespace SCPNewView {
         }
         static GameData s_current;
 
-        static void Save() {
-            SaveManager.SaveGame(s_current, "Data/gameData");
+        public static void Save() {
+            List<IDataPersisting> objectsWithPersistingData = GameObject.FindObjectsOfType<MonoBehaviour>().OfType<IDataPersisting>().ToList();
+            foreach (IDataPersisting toCall in objectsWithPersistingData) {
+                toCall.OnGameSave();
+            }
+            SaveManager.SaveGame(s_current, "Data/gameData.save");
         }
     } 
     [Serializable]
     public class GameData {
-        public PlayerData PlayerData;
+        public PlayerData PlayerData { get => _playerData; }
+        
+        [SerializeField] PlayerData _playerData;
         
         public GameData() {
-            PlayerData = new PlayerData();
+            _playerData = new PlayerData();
         }
     }
     [Serializable]
     public class PlayerData {
-        public Vector2 Position;
+        public Vector2 Position { get => _position; set => _position = value; }
+
+        [SerializeField] Vector2 _position;
 
         public PlayerData() {
             // Load default stats from a scriptableobject
-            Position = new Vector2(1f, 2f);
+            _position = new Vector2(1f, 2f);
+        }
+    }
+    public interface IDataPersisting {
+        void OnGameSave() {
+
         }
     }
 }
