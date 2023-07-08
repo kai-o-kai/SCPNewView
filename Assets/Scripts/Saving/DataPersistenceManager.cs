@@ -47,13 +47,11 @@ namespace SCPNewView.Saving {
         [SerializeField] Vector2 _position;
 
         public PlayerData() {
-            // Load default stats from a scriptableobject
+            // Load default stats from a scriptableobject. This position setting is just placeholder.
             _position = new Vector2(1f, 2f);
         }
     }
     public interface IDataPersisting {
-        void OnGameSave() {
-
-        }
+        void OnGameSave();
     }
 }
