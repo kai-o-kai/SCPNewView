@@ -11,11 +11,11 @@ namespace SCPNewView {
             cam = cam == null ? Camera.main : cam;    
         }
         void Update() {
-            transform.rotation = Quaternion.Euler(0f, 0f, GetAngleToCamera());    
+            transform.rotation = Quaternion.Euler(0f, 0f, GetAimAngle());    
         }
 
         // TODO : This needs to work with controllers too.
-        float GetAngleToCamera() {
+        float GetAimAngle() {
             Vector2 mousePosScreenSpace = Mouse.current.position.ReadValue();
             Vector2 mousePosWorldSpace = cam.ScreenToWorldPoint(mousePosScreenSpace);
             Vector2 dirToMouse = mousePosWorldSpace - (Vector2)transform.position;
