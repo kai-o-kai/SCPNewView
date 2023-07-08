@@ -29,9 +29,11 @@ namespace SCPNewView {
         }
         void Start() {
             _rb.gravityScale = 0f;
+            _rb.position = DataPersistenceManager.Current.PlayerData.Position;
         }
         void Update() {
             DampExternalForces();
+            DataPersistenceManager.Current.PlayerData.Position = _rb.position;
         }
         void FixedUpdate() {
             Vector2 moveVector = _inputActions.Player.Movement.ReadValue<Vector2>().normalized;

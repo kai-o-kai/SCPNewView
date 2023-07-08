@@ -12,6 +12,7 @@ namespace SCPNewView {
                     GameData loaded = (GameData)SaveManager.LoadGame<GameData>("Data/gameData");
                     if (loaded == null) { loaded = new GameData(); }
                     s_current = loaded;
+                    Save();
                 }
                 return s_current;
             }
@@ -20,10 +21,14 @@ namespace SCPNewView {
             }
         }
         static GameData s_current;
+
+        static void Save() {
+            SaveManager.SaveGame(s_current, "Data/gameData");
+        }
     } 
     [Serializable]
     public class GameData {
-        public PlayerData PlayerData { get; private set; }
+        public PlayerData PlayerData;
         
         public GameData() {
             PlayerData = new PlayerData();
@@ -31,10 +36,11 @@ namespace SCPNewView {
     }
     [Serializable]
     public class PlayerData {
-        public Vector2 Position { get; set; }
+        public Vector2 Position;
 
         public PlayerData() {
             // Load default stats from a scriptableobject
+            Position = new Vector2(1f, 2f);
         }
     }
 }
