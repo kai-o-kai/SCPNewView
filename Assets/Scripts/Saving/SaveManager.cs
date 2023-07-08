@@ -11,7 +11,7 @@ namespace SCPNewView.Saving {
         static string s_pathPrefix;
 
         public static void SaveGame(object toSave, string path) {
-            s_serializer = s_serializer == null ? new JSONSerializer() : s_serializer;
+            s_serializer = s_serializer == null ? new LegacyJSONSerializer() : s_serializer;
             s_pathPrefix = s_pathPrefix == null ? Application.persistentDataPath + "/Saves/" : s_pathPrefix;
             try {
                 string totalPath = Path.Combine(s_pathPrefix, path);
@@ -28,12 +28,13 @@ namespace SCPNewView.Saving {
             }
         }
         public static object LoadGame<T>(string path) {
-            s_serializer = s_serializer == null ? new JSONSerializer() : s_serializer;
+            s_serializer = s_serializer == null ? new LegacyJSONSerializer() : s_serializer;
             s_pathPrefix = s_pathPrefix == null ? Application.persistentDataPath + "/Saves/" : s_pathPrefix;
             try {
                 string totalPath = Path.Combine(s_pathPrefix, path);
                 string directoryPath = Path.GetDirectoryName(totalPath);
                 string loaded = "";
+                if (!File.Exists(totalPath)) return null;
                 if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
                 using (FileStream stream = new FileStream(totalPath, FileMode.Open)) {
                     using (StreamReader reader = new StreamReader(stream)) {

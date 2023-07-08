@@ -10,6 +10,8 @@ namespace SCPNewView.Saving.Serialization {
      * - Properties, manual backing fields or not ARE saved
      * - Public fields ARE saved
      * - Non serialized private fields ARE saved
+     *
+     * - IMPORTANT: This save system is buggy, and I'll likely deprecate it. Don't use this. Use LegacyJSONSerilalizer.
      */
     public class JSONSerializer : ISerializer {
         public object Serialize(object toSerialize) {
