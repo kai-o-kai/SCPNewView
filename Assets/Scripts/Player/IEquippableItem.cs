@@ -7,7 +7,7 @@ namespace SCPNewView.Inventory {
         bool CanDeEquip { get; }
         
         void OnEquip();
-        void OnFireKey();
-        void OnReloadKey();
+        void OnFireKeyHold();
+        void OnReloadKeyPress();
     }
 }
