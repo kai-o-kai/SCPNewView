@@ -6,9 +6,11 @@ using UnityEngine.InputSystem;
 namespace SCPNewView {
     public class PlayerAiming : MonoBehaviour {
         [SerializeField] Camera cam;
+        InputSettings _inputActions;
 
         void Awake() {
-            cam = cam == null ? Camera.main : cam;    
+            cam = cam == null ? Camera.main : cam;
+            _inputActions = new InputSettings();
         }
         void Update() {
             transform.rotation = Quaternion.Euler(0f, 0f, GetAimAngle());    
