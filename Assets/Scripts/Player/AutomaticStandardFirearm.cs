@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using SCPNewView.Audio;
 using UnityEngine;
 
 namespace SCPNewView.Inventory {
@@ -9,7 +11,7 @@ namespace SCPNewView.Inventory {
         string _fireSound;
         int _ammoPerMag;
         int _currentAmmo;
-        int _roundsPerMinute;
+        float _secondsBetweenShots;
         float _reloadTimeSeconds;
         AmmoType _ammoType;
 
@@ -18,18 +20,25 @@ namespace SCPNewView.Inventory {
             _fireSound = fireSound;
             _ammoPerMag = ammoPerMag;
             _currentAmmo = currentAmmo;
-            _roundsPerMinute = roundsPerMinute;
+            _secondsBetweenShots = (roundsPerMinute / 3600f);
             _reloadTimeSeconds = reloadTimeSeconds;
             _ammoType = ammoType;
         }
 
         public void OnEquip() {
+            AudioManager.Instance.PlaySoundByName(_equipSound);
         }
+        public void OnDeEquip() {
 
+        }
         public void OnFireKeyHold() {
         }
 
-        public void OnReloadKeyPress() {
+        public async void OnReloadKeyPress() {
+            CanDeEquip = false;
+            await Task.Delay(Mathf.RoundToInt(_reloadTimeSeconds * 1000));
+            // reload
+            CanDeEquip = true;
         }
     }
     public enum AmmoType {
