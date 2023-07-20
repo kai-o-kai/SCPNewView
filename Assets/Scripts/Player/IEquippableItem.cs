@@ -8,7 +8,8 @@ namespace SCPNewView.Inventory {
         
         void OnEquip();
         void OnDeEquip();
-        void OnFireKeyHold();
+        void OnFireKeyStart();
+        void OnFireKeyEnd();
         void OnReloadKeyPress();
     }
 }

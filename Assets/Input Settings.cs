@@ -55,6 +55,15 @@ namespace SCPNewView
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""4466e981-2678-442a-adfc-f47c1346bcc3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -200,17 +209,46 @@ namespace SCPNewView
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""530c48ae-4d47-495d-ab70-d8d926937fea"",
+                    ""path"": ""<Pointer>/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KBM"",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""KBM"",
+            ""bindingGroup"": ""KBM"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
             // Player
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
             m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
+            m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -275,6 +313,7 @@ namespace SCPNewView
         private readonly InputAction m_Player_Movement;
         private readonly InputAction m_Player_Sprint;
         private readonly InputAction m_Player_Aim;
+        private readonly InputAction m_Player_Fire;
         public struct PlayerActions
         {
             private @InputSettings m_Wrapper;
@@ -282,6 +321,7 @@ namespace SCPNewView
             public InputAction @Movement => m_Wrapper.m_Player_Movement;
             public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
             public InputAction @Aim => m_Wrapper.m_Player_Aim;
+            public InputAction @Fire => m_Wrapper.m_Player_Fire;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -300,6 +340,9 @@ namespace SCPNewView
                 @Aim.started += instance.OnAim;
                 @Aim.performed += instance.OnAim;
                 @Aim.canceled += instance.OnAim;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -313,6 +356,9 @@ namespace SCPNewView
                 @Aim.started -= instance.OnAim;
                 @Aim.performed -= instance.OnAim;
                 @Aim.canceled -= instance.OnAim;
+                @Fire.started -= instance.OnFire;
+                @Fire.performed -= instance.OnFire;
+                @Fire.canceled -= instance.OnFire;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -330,11 +376,21 @@ namespace SCPNewView
             }
         }
         public PlayerActions @Player => new PlayerActions(this);
+        private int m_KBMSchemeIndex = -1;
+        public InputControlScheme KBMScheme
+        {
+            get
+            {
+                if (m_KBMSchemeIndex == -1) m_KBMSchemeIndex = asset.FindControlSchemeIndex("KBM");
+                return asset.controlSchemes[m_KBMSchemeIndex];
+            }
+        }
         public interface IPlayerActions
         {
             void OnMovement(InputAction.CallbackContext context);
             void OnSprint(InputAction.CallbackContext context);
             void OnAim(InputAction.CallbackContext context);
+            void OnFire(InputAction.CallbackContext context);
         }
     }
 }
