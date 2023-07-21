@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using SCPNewView.Audio;
-using Unity.VisualScripting;
+using SCPNewView.Utils;
 using UnityEngine;
 
-namespace SCPNewView.Inventory {
+namespace SCPNewView.Inventory.InventoryItems {
     public class AutomaticStandardFirearm : IEquippableItem {
         public bool CanDeEquip { get; private set; }
 
@@ -14,9 +12,11 @@ namespace SCPNewView.Inventory {
         private int _ammoPerMag;
         private int _currentAmmo;
         private float _secondsBetweenShots;
-        private float _reloadTimeSeconds;
+        private float _reloadTimeMilliseconds;
         private AmmoType _ammoType;
+        
         private bool _fireKeyIsPressed;
+        private Timer _shootTimer;
 
         public AutomaticStandardFirearm(string equipSound, string fireSound, int ammoPerMag, int currentAmmo, int roundsPerMinute, float reloadTimeSeconds, AmmoType ammoType) {
             _equipSound = equipSound;
@@ -24,7 +24,7 @@ namespace SCPNewView.Inventory {
             _ammoPerMag = ammoPerMag;
             _currentAmmo = currentAmmo;
             _secondsBetweenShots = (roundsPerMinute / 3600f);
-            _reloadTimeSeconds = reloadTimeSeconds;
+            _reloadTimeMilliseconds = reloadTimeSeconds * 1000f;
             _ammoType = ammoType;
         }
 
@@ -36,16 +36,29 @@ namespace SCPNewView.Inventory {
         }
         public void OnFireKeyStart() {
             _fireKeyIsPressed = true;
+            Fire();
         }
         public void OnFireKeyEnd() {
+            Debug.Log("Fire key released");
             _fireKeyIsPressed = false;
-
+            _shootTimer = null;
+            Timer.RemoveTimersWithCallback(Fire);
         }
         public async void OnReloadKeyPress() {
             CanDeEquip = false;
-            await Task.Delay(Mathf.RoundToInt(_reloadTimeSeconds * 1000));
+            await Task.Delay(Mathf.RoundToInt(_reloadTimeMilliseconds));
             // reload
             CanDeEquip = true;
+        }
+        private void Fire() {
+            if (!_fireKeyIsPressed) return;
+            Debug.Log("gun go shoot");
+            PrepareNextShot();
+        }
+        private void PrepareNextShot() {
+            Debug.Log("Prepping next shot");
+            _shootTimer = new Timer(Fire, _secondsBetweenShots);
+            Debug.Log($"Shoot Timer set with {_shootTimer.SecondsLeft}s duration");
         }
     }
     public enum AmmoType {
