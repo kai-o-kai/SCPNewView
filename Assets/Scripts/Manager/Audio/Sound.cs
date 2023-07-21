@@ -2,7 +2,7 @@
 using UnityEngine.Audio;
 
 namespace SCPNewView.Audio {
-    [CreateAssetMenu(menuName = "ScriptableObjects/Sound", order = 5)]
+    [CreateAssetMenu(menuName = "Scriptable Objects/Sound", order = 5)]
     public class Sound : ScriptableObject {
         [SerializeField] AudioClip clip;
         [SerializeField] float volume;

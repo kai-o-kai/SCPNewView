@@ -15,33 +15,34 @@ namespace SCPNewView {
             set => _externalForce += value;
         }
 
-        Rigidbody2D _rb;
-        InputSettings _inputActions;
-        Vector2 _externalForce;
+        private Rigidbody2D _rb;
+        private InputSettings _inputActions;
+        private Vector2 _externalForce;
 
-        [SerializeField] float moveSpeed;
-        [SerializeField] float forceDamping = 1.2f;
+        [SerializeField] private float moveSpeed;
+        [SerializeField] private float forceDamping = 1.2f;
 
-
-        void Awake() {
+        private void Awake() {
             Instance = this;
             _rb = GetComponent<Rigidbody2D>();
             _inputActions = new InputSettings();
         }
-        void Start() {
+
+        private void Start() {
             _rb.gravityScale = 0f;
             _rb.position = DataPersistenceManager.Current.PlayerData.Position;
         }
-        void Update() {
-            DampExternalForces();
-        }
-        void FixedUpdate() {
+
+        private void Update() => DampExternalForces();
+
+        private void FixedUpdate() {
             Vector2 moveVector = _inputActions.Player.Movement.ReadValue<Vector2>().normalized;
             moveVector *= moveSpeed;
             moveVector += _externalForce;
             _rb.velocity = moveVector;
         }
-        void DampExternalForces() {
+
+        private void DampExternalForces() {
             _externalForce /= forceDamping;
             bool xIsLow = Mathf.Abs(_externalForce.x) < 0.01f;
             bool yIsLow = Mathf.Abs(_externalForce.y) < 0.01f;
@@ -49,15 +50,17 @@ namespace SCPNewView {
                 _externalForce = Vector2.zero;
             }
         }
-        void OnEnable() {
+
+        private void OnEnable() {
             _inputActions.Player.Enable();
         }
-        void OnDisable() { 
+
+        private void OnDisable() {
             _inputActions.Player.Disable();
         }
 
         [ContextMenu("Fling External Forces")]
-        void FlingInRandomDir() {
+        private void FlingInRandomDir() {
             Vector2 dir = new Vector2();
             dir.x = Random.Range(-15f, 15f);
             dir.y = Random.Range(-15f, 15f);

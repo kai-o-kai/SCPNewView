@@ -4,7 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace SCPNewView.Audio {
+    [CreateAssetMenu(menuName = "Scriptable Objects/Sound Grouping")]
     public class SoundGrouping : ScriptableObject {
+        public Sound[] Sounds { get => sounds; }
+        public Scene AssociatedScene { get => belongsTo; }
+
         [SerializeField] Scene belongsTo;
         [SerializeField] Sound[] sounds;
     }

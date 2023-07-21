@@ -8,20 +8,32 @@ namespace SCPNewView.Audio {
      * - Audio groups need to find themselves rather than be inspector injected
      */
     public class AudioManager : MonoBehaviour {
-        public static AudioManager Instance { get; private set; }
+        public static AudioManager Instance { get {
+                if (s_instance == null) {
+                    s_instance = new GameObject("Audio Manager").AddComponent<AudioManager>();
+                }
+                return s_instance;
+        } private set => s_instance = value; }
+        static AudioManager s_instance;
 
-        [SerializeField] Sound[] sounds;
-        
+        Sound[] sounds;
+
         AudioMixerGroup _sfxGroup;
         AudioMixerGroup _musicGroup;
 
         AudioMixer _mixer;
 
         void Awake() {
-            Instance = this;
             _mixer = Resources.Load<AudioMixer>("mainMixer");
             _sfxGroup = _mixer.FindMatchingGroups("SFX")[0];
             _musicGroup = _mixer.FindMatchingGroups("Music")[0];
+
+            SoundGrouping[] soundGroupings = Resources.LoadAll<SoundGrouping>("Sound Groupings");
+            SoundGrouping soundsForThisManager = Array.Find(soundGroupings, check => check.AssociatedScene == gameObject.scene);
+            if (soundsForThisManager == null) { Debug.LogError($"SCPNewView Audio Manager: Cannot find an associated sound grouping for this scene! Create a sound grouping for {gameObject.scene.name}.", this); return; }
+            sounds = soundsForThisManager.Sounds;
+
+
             foreach (Sound toInitialize in sounds) {
                 AudioSource newSource = gameObject.AddComponent<AudioSource>();
                 toInitialize.Initialize(newSource, _musicGroup, _sfxGroup);
