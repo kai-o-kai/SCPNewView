@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SCPNewView.Audio;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SCPNewView.Inventory {
@@ -15,6 +16,7 @@ namespace SCPNewView.Inventory {
         private float _secondsBetweenShots;
         private float _reloadTimeSeconds;
         private AmmoType _ammoType;
+        private bool _fireKeyIsPressed;
 
         public AutomaticStandardFirearm(string equipSound, string fireSound, int ammoPerMag, int currentAmmo, int roundsPerMinute, float reloadTimeSeconds, AmmoType ammoType) {
             _equipSound = equipSound;
@@ -33,11 +35,12 @@ namespace SCPNewView.Inventory {
 
         }
         public void OnFireKeyStart() {
+            _fireKeyIsPressed = true;
         }
         public void OnFireKeyEnd() {
+            _fireKeyIsPressed = false;
 
         }
-
         public async void OnReloadKeyPress() {
             CanDeEquip = false;
             await Task.Delay(Mathf.RoundToInt(_reloadTimeSeconds * 1000));
