@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40b440fee0183bd40b7f7872693814ec, type: 3}
   m_Name: Reference Manager
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 7439906660431903088, guid: 686def2dd40678c428c7859deccf9a96, type: 3}

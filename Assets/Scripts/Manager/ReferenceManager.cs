@@ -22,7 +22,7 @@ namespace SCPNewView {
 
         [SerializeField] private GameObject bulletPrefab;
 
-        private void Awake() {
+        private void OnEnable() {
             if (s_current == null) {
                 s_current = this;
             } else {
