@@ -5,24 +5,28 @@ using UnityEngine.InputSystem;
 
 namespace SCPNewView {
     public class PlayerAiming : MonoBehaviour {
-        [SerializeField] Camera cam;
-        InputSettings _inputActions;
+        [SerializeField] private Camera cam;
+        private InputSettings _inputActions;
 
-        void Awake() {
+        private void Awake() {
             cam = cam == null ? Camera.main : cam;
             _inputActions = new InputSettings();
         }
-        void Update() {
+        private void Update() {
             transform.rotation = Quaternion.Euler(0f, 0f, GetAimAngle());    
         }
-
-        // TODO : This needs to work with controllers too.
-        float GetAimAngle() {
-            Vector2 mousePosScreenSpace = Mouse.current.position.ReadValue();
+        private float GetAimAngle() {
+            Vector2 mousePosScreenSpace = _inputActions.Player.Aim.ReadValue<Vector2>();
             Vector2 mousePosWorldSpace = cam.ScreenToWorldPoint(mousePosScreenSpace);
             Vector2 dirToMouse = mousePosWorldSpace - (Vector2)transform.position;
             float angle = Mathf.Atan2(dirToMouse.y, dirToMouse.x) * Mathf.Rad2Deg - 90f;
             return angle;
+        }
+        private void OnEnable() {
+            _inputActions.Enable();
+        }
+        private void OnDisable() {
+            _inputActions.Disable();
         }
     }
 }
