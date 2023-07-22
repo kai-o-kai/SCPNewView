@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using SCPNewView.Inventory.InventoryItems;
 
 namespace SCPNewView.Inventory {
     public class PlayerInventory : MonoBehaviour {
@@ -14,6 +12,7 @@ namespace SCPNewView.Inventory {
             _inputActions = new InputSettings();
             _inputActions.Player.Fire.started += (ctx) => _currentItem.OnFireKeyStart();
             _inputActions.Player.Fire.canceled += (ctx) => _currentItem.OnFireKeyEnd();
+            _currentItem = new AutomaticStandardFirearm(string.Empty, string.Empty, 30, 30, 50, 2.5f, AmmoType.A762);
         }
         private void OnEnable() {
             _inputActions.Enable();
