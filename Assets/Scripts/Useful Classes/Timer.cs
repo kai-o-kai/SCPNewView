@@ -26,7 +26,7 @@ namespace SCPNewView.Utils {
             s_activeTimers.Add(this);
             RunTimer();
         }
-        private async void RunTimer(CancellationTokenSource cancelToken = default) {
+        private async void RunTimer() {
             while (_currentDurSeconds > 0) {
                 await Task.Yield();
                 _currentDurSeconds -= Time.deltaTime;
@@ -34,5 +34,4 @@ namespace SCPNewView.Utils {
             if (_timerIsActive) _onTimerComplete?.Invoke();
         }
     }
-
 }
