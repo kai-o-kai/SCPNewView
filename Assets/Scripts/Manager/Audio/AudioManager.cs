@@ -30,7 +30,7 @@ namespace SCPNewView.Audio {
 
             SoundGrouping[] soundGroupings = Resources.LoadAll<SoundGrouping>("Sound Groupings");
             SoundGrouping soundsForThisManager = Array.Find(soundGroupings, check => check.AssociatedScene == gameObject.scene);
-            if (soundsForThisManager == null) { Debug.LogError($"SCPNewView Audio Manager: Cannot find an associated sound grouping for this scene! Create a sound grouping for {gameObject.scene.name}.", this); return; }
+            if (soundsForThisManager == null) { Debug.LogWarning($"SCPNewView Audio Manager: Cannot find an associated sound grouping for this scene! Create a sound grouping for {gameObject.scene.name}.", this); return; }
             sounds = soundsForThisManager.Sounds;
 
 
@@ -46,7 +46,14 @@ namespace SCPNewView.Audio {
             FindSoundByName(name)?.Stop();
         }
         Sound FindSoundByName(string str) {
-            Sound output = Array.Find(sounds, s => s.name == str);
+            if (string.IsNullOrWhiteSpace(str)) return null;
+
+            Sound output = null;
+            try {
+                output = Array.Find(sounds, s => s.name == str);
+            } catch (Exception err) {
+                Debug.LogWarning(err.Message);
+            }
             if (output == null) {
                 Debug.LogWarning($"SCPNewView Audio Manager: Attempted to find sound by name \"{str}\" but does not exist!", this);
             }

@@ -16,16 +16,20 @@ namespace SCPNewView.Inventory.InventoryItems {
         private AmmoType _ammoType;
         
         private bool _fireKeyIsPressed;
-        private Timer _shootTimer;
+        private GameObject _bulletPrefab;
+        private Transform _firePoint;
 
-        public AutomaticStandardFirearm(string equipSound, string fireSound, int ammoPerMag, int currentAmmo, int roundsPerMinute, float reloadTimeSeconds, AmmoType ammoType) {
+        public AutomaticStandardFirearm(string equipSound = default, string fireSound = default, int ammoPerMag = 30, int roundsPerMinute = 50, float reloadTimeSeconds = 2.5f, AmmoType ammoType = AmmoType.A762) {
             _equipSound = equipSound;
             _fireSound = fireSound;
             _ammoPerMag = ammoPerMag;
-            _currentAmmo = currentAmmo;
+            _currentAmmo = _ammoPerMag;
             _secondsBetweenShots = (roundsPerMinute / 3600f);
             _reloadTimeMilliseconds = reloadTimeSeconds * 1000f;
             _ammoType = ammoType;
+            _bulletPrefab = ReferenceManager.Current.BulletPrefab;
+            Transform player = Object.FindObjectOfType<PlayerMovement>().transform;
+            _firePoint = player.GetChild(0);
         }
 
         public void OnEquip() {
@@ -39,9 +43,7 @@ namespace SCPNewView.Inventory.InventoryItems {
             Fire();
         }
         public void OnFireKeyEnd() {
-            Debug.Log("Fire key released");
             _fireKeyIsPressed = false;
-            _shootTimer = null;
             Timer.RemoveTimersWithCallback(Fire);
         }
         public async void OnReloadKeyPress() {
@@ -52,14 +54,11 @@ namespace SCPNewView.Inventory.InventoryItems {
         }
         private void Fire() {
             if (!_fireKeyIsPressed) return;
-            Debug.Log("gun go shoot");
+            AudioManager.Instance.PlaySoundByName(_fireSound);
+            Object.Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation).GetComponent<Bullet>().Init(20f, Layers.PlayerFiredBullet);
             PrepareNextShot();
         }
-        private void PrepareNextShot() {
-            Debug.Log("Prepping next shot");
-            _shootTimer = new Timer(Fire, _secondsBetweenShots);
-            Debug.Log($"Shoot Timer set with {_shootTimer.SecondsLeft}s duration");
-        }
+        private void PrepareNextShot() => new Timer(Fire, _secondsBetweenShots);
     }
     public enum AmmoType {
         A9mm, A556, A762, ABuckshot
