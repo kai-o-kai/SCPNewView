@@ -1,9 +1,8 @@
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-using SCPNewView.Saving;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SCPNewView.Saving {
     public static class DataPersistenceManager {
@@ -23,7 +22,7 @@ namespace SCPNewView.Saving {
         static GameData s_current;
 
         public static void Save() {
-            List<IDataPersisting> objectsWithPersistingData = GameObject.FindObjectsOfType<MonoBehaviour>().OfType<IDataPersisting>().ToList();
+            List<IDataPersisting> objectsWithPersistingData = Object.FindObjectsOfType<MonoBehaviour>().OfType<IDataPersisting>().ToList();
             foreach (IDataPersisting toCall in objectsWithPersistingData) {
                 toCall.OnGameSave();
             }

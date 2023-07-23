@@ -3,10 +3,6 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 namespace SCPNewView.Audio {
-    /* TODO
-     * - Make the sounds array go under a scriptableobject which stores the sounds array and the scene it gets used for
-     * - Audio groups need to find themselves rather than be inspector injected
-     */
     public class AudioManager : MonoBehaviour {
         public static AudioManager Instance { get {
                 if (s_instance == null) {
