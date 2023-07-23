@@ -20,13 +20,13 @@ namespace SCPNewView.Inventory.InventoryItems {
         private bool _fireKeyIsPressed;
         private GameObject _bulletPrefab;
         private Transform _firePoint;
-
+        // TODO : shooting sound should be a loop and play on fire key start and stop on fire key end.
         public AutomaticStandardFirearm(string equipSound = default, string fireSound = default, int ammoPerMag = 30, int roundsPerMinute = 292, float reloadTimeSeconds = 2.5f, AmmoType ammoType = AmmoType.A762, float damage = 60f) {
             _equipSound = equipSound;
             _fireSound = fireSound;
             _ammoPerMag = ammoPerMag;
             _currentAmmo = _ammoPerMag;
-            _secondsBetweenShots = (60 / roundsPerMinute);
+            _secondsBetweenShots = 1 / (roundsPerMinute / 60f);
             _reloadTimeMilliseconds = reloadTimeSeconds * 1000f;
             _ammoType = ammoType;
             _bulletPrefab = ReferenceManager.Current.BulletPrefab;
@@ -49,6 +49,7 @@ namespace SCPNewView.Inventory.InventoryItems {
         public void OnFireKeyEnd() {
             _fireKeyIsPressed = false;
             Timer.RemoveTimersWithCallback(Fire);
+            AudioManager.Instance.StopSoundByName(_fireSound);
         }
         public async void OnReloadKeyPress() {
             CanDeEquip = false;
@@ -58,8 +59,8 @@ namespace SCPNewView.Inventory.InventoryItems {
         }
         private void Fire() {
             if (!_fireKeyIsPressed) return;
-            AudioManager.Instance.PlaySoundByName(_fireSound);
             Object.Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation).GetComponent<Bullet>().Init(20f, Layers.PlayerFiredBullet, _damage);
+            AudioManager.Instance.PlaySoundByName(_fireSound);
             PrepareNextShot();
         }
         private void PrepareNextShot() => new Timer(Fire, _secondsBetweenShots);

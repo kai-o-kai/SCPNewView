@@ -15,3 +15,4 @@ MonoBehaviour:
   belongsTo: SampleScene
   sounds:
   - {fileID: 11400000, guid: 1f8a3fd99593dbc4894e9c7fb2f325d5, type: 2}
+  - {fileID: 11400000, guid: 63cf95e102b46264fb6e4271318462b6, type: 2}

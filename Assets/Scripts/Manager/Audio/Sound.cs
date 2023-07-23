@@ -18,6 +18,7 @@ namespace SCPNewView.Audio {
             _source.pitch = pitch;
             _source.loop = loop;
             _source.clip = clip;
+            _source.playOnAwake = false;
             switch (type) {
                 case SoundType.SFX:
                     _source.outputAudioMixerGroup = sfxGroup;
