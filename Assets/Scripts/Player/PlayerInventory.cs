@@ -22,7 +22,7 @@ namespace SCPNewView.Inventory {
             _inputActions.Player.SecondarySelect.performed += (ctx) => TrySelectQuickSlot(2);
             _inputActions.Player.TertiarySelect.performed += (ctx) => TrySelectQuickSlot(3);
 
-            _primarySlot = new AutomaticStandardFirearm();
+            _primarySlot = new AutomaticStandardFirearm(equipSound: "rifle_equip", fireSound: "rifle_shoot");
             _secondarySlot = new SemiAutomaticStandardFirearm();
 
             TrySelectQuickSlot(1);

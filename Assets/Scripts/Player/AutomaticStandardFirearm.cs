@@ -21,12 +21,12 @@ namespace SCPNewView.Inventory.InventoryItems {
         private GameObject _bulletPrefab;
         private Transform _firePoint;
 
-        public AutomaticStandardFirearm(string equipSound = default, string fireSound = default, int ammoPerMag = 30, int roundsPerMinute = 50, float reloadTimeSeconds = 2.5f, AmmoType ammoType = AmmoType.A762, float damage = 60f) {
+        public AutomaticStandardFirearm(string equipSound = default, string fireSound = default, int ammoPerMag = 30, int roundsPerMinute = 292, float reloadTimeSeconds = 2.5f, AmmoType ammoType = AmmoType.A762, float damage = 60f) {
             _equipSound = equipSound;
             _fireSound = fireSound;
             _ammoPerMag = ammoPerMag;
             _currentAmmo = _ammoPerMag;
-            _secondsBetweenShots = (roundsPerMinute / 3600f);
+            _secondsBetweenShots = (60 / roundsPerMinute);
             _reloadTimeMilliseconds = reloadTimeSeconds * 1000f;
             _ammoType = ammoType;
             _bulletPrefab = ReferenceManager.Current.BulletPrefab;

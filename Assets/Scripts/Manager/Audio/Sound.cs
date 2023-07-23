@@ -5,8 +5,8 @@ namespace SCPNewView.Audio {
     [CreateAssetMenu(menuName = "Scriptable Objects/Sound", order = 5)]
     public class Sound : ScriptableObject {
         [SerializeField] AudioClip clip;
-        [SerializeField] float volume;
-        [SerializeField] float pitch;
+        [SerializeField] float volume = 1f;
+        [SerializeField] float pitch = 1f;
         [SerializeField] bool loop;
         [SerializeField] bool playOnAwake;
         [SerializeField] SoundType type;
@@ -28,7 +28,7 @@ namespace SCPNewView.Audio {
             }
             if (playOnAwake) _source.Play();
         }
-        public void Play() => _source.Play();
+        public void Play() => _source.PlayOneShot(clip);
         public void Stop() => _source.Stop();
     }
 }
