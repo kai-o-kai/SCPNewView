@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace SCPNewView.Inventory.InventoryItems {
     public class AutomaticStandardFirearm : IEquippableItem {
-        public bool CanDeEquip { get; private set; }
+        public bool CanDeEquip { get; private set; } = true;
+        public int Slot { get; private set; } = 1;
 
         private string _equipSound;
         private string _fireSound;

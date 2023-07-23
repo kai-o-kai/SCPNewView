@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace SCPNewView {
     public class PlayerAiming : MonoBehaviour {
@@ -17,14 +16,10 @@ namespace SCPNewView {
             Vector2 mousePosScreenSpace = _inputActions.Player.Aim.ReadValue<Vector2>();
             Vector2 mousePosWorldSpace = cam.ScreenToWorldPoint(mousePosScreenSpace);
             Vector2 dirToMouse = mousePosWorldSpace - (Vector2)transform.position;
-            float angle = Mathf.Atan2(dirToMouse.y, dirToMouse.x) * Mathf.Rad2Deg - 90f;
+            float angle = (Mathf.Atan2(dirToMouse.y, dirToMouse.x) * Mathf.Rad2Deg) - 90f;
             return angle;
         }
-        private void OnEnable() {
-            _inputActions.Enable();
-        }
-        private void OnDisable() {
-            _inputActions.Disable();
-        }
+        private void OnEnable() => _inputActions.Enable();
+        private void OnDisable() => _inputActions.Disable();
     }
 }

@@ -64,6 +64,33 @@ namespace SCPNewView
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""PrimarySelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""5dd110dd-20f8-4ff9-8afa-1206db23b58f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SecondarySelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""50133c07-b79b-43cb-88bf-4307302ca89e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TertiarySelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""8742a9e1-c50f-4ebf-88dc-23188527b52d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -216,32 +243,48 @@ namespace SCPNewView
                     ""path"": ""<Pointer>/press"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""KBM"",
+                    ""groups"": """",
                     ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f665888-8938-4b95-8a06-ce9757c761d6"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PrimarySelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""09c20b3f-1e05-4c58-9b66-0ca3679850dc"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondarySelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e1447ed-ac51-40da-8aff-37900fa0762f"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TertiarySelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
             ]
         }
     ],
-    ""controlSchemes"": [
-        {
-            ""name"": ""KBM"",
-            ""bindingGroup"": ""KBM"",
-            ""devices"": [
-                {
-                    ""devicePath"": ""<Mouse>"",
-                    ""isOptional"": false,
-                    ""isOR"": false
-                },
-                {
-                    ""devicePath"": ""<Keyboard>"",
-                    ""isOptional"": false,
-                    ""isOR"": false
-                }
-            ]
-        }
-    ]
+    ""controlSchemes"": []
 }");
             // Player
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
@@ -249,6 +292,9 @@ namespace SCPNewView
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
             m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+            m_Player_PrimarySelect = m_Player.FindAction("PrimarySelect", throwIfNotFound: true);
+            m_Player_SecondarySelect = m_Player.FindAction("SecondarySelect", throwIfNotFound: true);
+            m_Player_TertiarySelect = m_Player.FindAction("TertiarySelect", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -314,6 +360,9 @@ namespace SCPNewView
         private readonly InputAction m_Player_Sprint;
         private readonly InputAction m_Player_Aim;
         private readonly InputAction m_Player_Fire;
+        private readonly InputAction m_Player_PrimarySelect;
+        private readonly InputAction m_Player_SecondarySelect;
+        private readonly InputAction m_Player_TertiarySelect;
         public struct PlayerActions
         {
             private @InputSettings m_Wrapper;
@@ -322,6 +371,9 @@ namespace SCPNewView
             public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
             public InputAction @Aim => m_Wrapper.m_Player_Aim;
             public InputAction @Fire => m_Wrapper.m_Player_Fire;
+            public InputAction @PrimarySelect => m_Wrapper.m_Player_PrimarySelect;
+            public InputAction @SecondarySelect => m_Wrapper.m_Player_SecondarySelect;
+            public InputAction @TertiarySelect => m_Wrapper.m_Player_TertiarySelect;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -343,6 +395,15 @@ namespace SCPNewView
                 @Fire.started += instance.OnFire;
                 @Fire.performed += instance.OnFire;
                 @Fire.canceled += instance.OnFire;
+                @PrimarySelect.started += instance.OnPrimarySelect;
+                @PrimarySelect.performed += instance.OnPrimarySelect;
+                @PrimarySelect.canceled += instance.OnPrimarySelect;
+                @SecondarySelect.started += instance.OnSecondarySelect;
+                @SecondarySelect.performed += instance.OnSecondarySelect;
+                @SecondarySelect.canceled += instance.OnSecondarySelect;
+                @TertiarySelect.started += instance.OnTertiarySelect;
+                @TertiarySelect.performed += instance.OnTertiarySelect;
+                @TertiarySelect.canceled += instance.OnTertiarySelect;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -359,6 +420,15 @@ namespace SCPNewView
                 @Fire.started -= instance.OnFire;
                 @Fire.performed -= instance.OnFire;
                 @Fire.canceled -= instance.OnFire;
+                @PrimarySelect.started -= instance.OnPrimarySelect;
+                @PrimarySelect.performed -= instance.OnPrimarySelect;
+                @PrimarySelect.canceled -= instance.OnPrimarySelect;
+                @SecondarySelect.started -= instance.OnSecondarySelect;
+                @SecondarySelect.performed -= instance.OnSecondarySelect;
+                @SecondarySelect.canceled -= instance.OnSecondarySelect;
+                @TertiarySelect.started -= instance.OnTertiarySelect;
+                @TertiarySelect.performed -= instance.OnTertiarySelect;
+                @TertiarySelect.canceled -= instance.OnTertiarySelect;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -376,21 +446,15 @@ namespace SCPNewView
             }
         }
         public PlayerActions @Player => new PlayerActions(this);
-        private int m_KBMSchemeIndex = -1;
-        public InputControlScheme KBMScheme
-        {
-            get
-            {
-                if (m_KBMSchemeIndex == -1) m_KBMSchemeIndex = asset.FindControlSchemeIndex("KBM");
-                return asset.controlSchemes[m_KBMSchemeIndex];
-            }
-        }
         public interface IPlayerActions
         {
             void OnMovement(InputAction.CallbackContext context);
             void OnSprint(InputAction.CallbackContext context);
             void OnAim(InputAction.CallbackContext context);
             void OnFire(InputAction.CallbackContext context);
+            void OnPrimarySelect(InputAction.CallbackContext context);
+            void OnSecondarySelect(InputAction.CallbackContext context);
+            void OnTertiarySelect(InputAction.CallbackContext context);
         }
     }
 }

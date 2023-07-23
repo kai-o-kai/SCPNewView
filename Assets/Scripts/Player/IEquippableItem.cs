@@ -5,7 +5,8 @@ using UnityEngine;
 namespace SCPNewView.Inventory {
     public interface IEquippableItem {
         bool CanDeEquip { get; }
-        
+        int Slot { get;  }
+
         void OnEquip();
         void OnDeEquip();
         void OnFireKeyStart();
