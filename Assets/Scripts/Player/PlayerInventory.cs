@@ -23,8 +23,9 @@ namespace SCPNewView.Inventory {
             _inputActions.Player.TertiarySelect.performed += (ctx) => TrySelectQuickSlot(3);
 
             _primarySlot = new AutomaticStandardFirearm();
+            _secondarySlot = new SemiAutomaticStandardFirearm();
 
-            _currentItem = _primarySlot;
+            TrySelectQuickSlot(1);
         }
 
         private void OnEnable() {

@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Resources;
+using UnityEditor;
 using UnityEngine;
 
 namespace SCPNewView {
@@ -9,8 +11,11 @@ namespace SCPNewView {
         public static ReferenceManager Current {
             get {
                 if (s_current == null) {
-                    Debug.LogWarning("No reference manager created! Creating a blank instance.");
-                    s_current = CreateInstance<ReferenceManager>();
+                    ReferenceManager loaded = Resources.Load<ReferenceManager>("Reference Manager");
+                    if (loaded == null) {
+                        Debug.LogWarning("No reference manager created! Create one and place in the Resources folder under the name \"Reference Manager\"");                        
+                    }
+                    s_current = loaded;
                 }
                 return s_current;
             }
@@ -21,15 +26,5 @@ namespace SCPNewView {
         public GameObject BulletPrefab => bulletPrefab;
 
         [SerializeField] private GameObject bulletPrefab;
-
-        private void OnEnable() {
-            if (s_current == null) {
-                s_current = this;
-            } else {
-                Debug.LogWarning($"More than one {GetType()} in assets!");
-            }
-        }
-
-
     }
 }

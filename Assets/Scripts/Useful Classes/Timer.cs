@@ -19,6 +19,12 @@ namespace SCPNewView.Utils {
         private Action _onTimerComplete;
         private float _currentDurSeconds;
 
+        /// <summary>
+        /// Creates AND RUNS a new timer.
+        /// </summary>
+        /// <param name="onTimerComplete">The method to run when the timer completes.</param>
+        /// <param name="durInSeconds">The duration the timer should be run for. The timer runs down, not up.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if a duration equal to or under 0 is provided.</exception>
         public Timer(Action onTimerComplete, float durInSeconds) {
             if (durInSeconds < 0) { throw new ArgumentOutOfRangeException(nameof(durInSeconds), durInSeconds, "Duration cannot be less than 0."); }
             _onTimerComplete = onTimerComplete;
