@@ -4,6 +4,6 @@ using UnityEngine;
 
 namespace SCPNewView {
     public interface IDamagable {
-        void OnHitByBullet(Bullet b);
+        void OnHitByBullet(Bullet b, float damage, int layer);
     }
 }
