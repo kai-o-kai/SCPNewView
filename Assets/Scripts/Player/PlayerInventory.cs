@@ -27,15 +27,23 @@ namespace SCPNewView.Inventory {
             _inputActions.Player.PrimarySelect.performed += (ctx) => TrySelectQuickSlot(1);
             _inputActions.Player.SecondarySelect.performed += (ctx) => TrySelectQuickSlot(2);
             _inputActions.Player.TertiarySelect.performed += (ctx) => TrySelectQuickSlot(3);
-            try {
-                _primarySlot = PrimarySlots.Items[DataPersistenceManager.Current.PlayerData.PrimarySlot];
-                _secondarySlot = SecondarySlots.Items[DataPersistenceManager.Current.PlayerData.SecondarySlot];
-                _tertiarySlot = TertiarySlots.Items[DataPersistenceManager.Current.PlayerData.TertiarySlot];
-            } catch (Exception err) {
-                Debug.LogWarning("Tried to find an empty item, dont worry about this too much");
-            }
-
+            LoadSavedItems();
             TrySelectQuickSlot(1);
+
+            void LoadSavedItems() {
+                string primarySlotName = DataPersistenceManager.Current.PlayerData.PrimarySlot;
+                string secondarySlotName = DataPersistenceManager.Current.PlayerData.SecondarySlot;
+                string tertiarySlotName = DataPersistenceManager.Current.PlayerData.TertiarySlot;
+                if (PrimarySlots.Items.ContainsKey(primarySlotName)) {
+                    _primarySlot = PrimarySlots.Items[primarySlotName];
+                }
+                if (PrimarySlots.Items.ContainsKey(secondarySlotName)) {
+                    _secondarySlot = SecondarySlots.Items[secondarySlotName];
+                }
+                if (PrimarySlots.Items.ContainsKey(tertiarySlotName)) {
+                    _tertiarySlot = TertiarySlots.Items[tertiarySlotName];
+                }
+            }
         }
 
         private void OnEnable() {
