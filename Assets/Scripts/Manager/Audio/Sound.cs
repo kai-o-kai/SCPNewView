@@ -30,6 +30,7 @@ namespace SCPNewView.Audio {
             if (playOnAwake) _source.Play();
         }
         public void Play() => _source.PlayOneShot(clip);
+        public void PlayAtPosition(Vector2 position) => AudioSource.PlayClipAtPoint(clip, position);
         public void Stop() => _source.Stop();
     }
 }

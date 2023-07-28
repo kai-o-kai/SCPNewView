@@ -41,6 +41,9 @@ namespace SCPNewView.Audio {
         public void StopSoundByName(string name) {
             FindSoundByName(name)?.Stop();
         }
+        public void PlaySoundAtPosition(string name, Vector2 pos) {
+            FindSoundByName(name)?.PlayAtPosition(pos);
+        }
         Sound FindSoundByName(string str) {
             if (string.IsNullOrWhiteSpace(str)) return null;
 

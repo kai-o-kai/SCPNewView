@@ -1,10 +1,9 @@
 using System;
 using SCPNewView.Audio;
+using SCPNewView.Inventory;
 using UnityEngine;
 
 namespace SCPNewView.Environment {
-    // TODO : This door system needs to work with keycards. pls try and make it work with few dependencies? 
-
     [RequireComponent(typeof(Animator))]
     public abstract class Door : MonoBehaviour {
         public event Action Opened;
