@@ -37,10 +37,10 @@ namespace SCPNewView.Inventory {
                 if (PrimarySlots.Items.ContainsKey(primarySlotName)) {
                     _primarySlot = PrimarySlots.Items[primarySlotName];
                 }
-                if (PrimarySlots.Items.ContainsKey(secondarySlotName)) {
+                if (SecondarySlots.Items.ContainsKey(secondarySlotName)) {
                     _secondarySlot = SecondarySlots.Items[secondarySlotName];
                 }
-                if (PrimarySlots.Items.ContainsKey(tertiarySlotName)) {
+                if (TertiarySlots.Items.ContainsKey(tertiarySlotName)) {
                     _tertiarySlot = TertiarySlots.Items[tertiarySlotName];
                 }
             }
