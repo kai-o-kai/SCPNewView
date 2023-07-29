@@ -4,20 +4,34 @@ using System.Collections.Generic;
 using SCPNewView.Management;
 using SCPNewView.Utils;
 using UnityEngine;
+using Pathfinding;
+using System;
 
 namespace SCPNewView.Entities.SCP049 {
+    [RequireComponent(typeof(Seeker), typeof(AIPath), typeof(AIDestinationSetter))]
     public class SCP049 : MonoBehaviour {
         public bool SeesAnyTarget => _validTargetList.Count != 0;
         public List<Transform> Targets => _validTargetList;
+        public (Seeker Seeker, AIPath Path, AIDestinationSetter Dest) PathfindingData => _pathfindingData;
+        public float Speed { get => _pathfindingData.path.maxSpeed; set => _pathfindingData.path.maxSpeed = value; }
+
+        [SerializeField] Vector2 debug_pathfindingLocation;
 
         private List<Tag> _targetTags;
         private IState _currentState;
         private List<Transform> _cachedTargetList;
         private List<Transform> _validTargetList;
+        private Transform _pathfindTransform;
+
+        private (Seeker seeker, AIPath path, AIDestinationSetter dest) _pathfindingData;
 
         private void Awake() {
             _targetTags = ReferenceManager.Current.FriendlyEntityTags;
             _validTargetList = new List<Transform>();
+            _pathfindingData = (GetComponent<Seeker>(), GetComponent<AIPath>(), GetComponent<AIDestinationSetter>());
+            _pathfindingData.path.maxAcceleration = 1000f;
+            _pathfindTransform = new GameObject("SCP049 Pathfind Target").transform;
+
             EventSystem.NewEntitySpawned += UpdateEntityListCache;
             UpdateEntityListCache();
         }
@@ -33,6 +47,10 @@ namespace SCPNewView.Entities.SCP049 {
             _currentState?.OnExitState();
             _currentState = newState;
             _currentState?.OnEnterState();
+        }
+        public void PathfindToLocation(Vector2 location) {
+            _pathfindTransform.position = location;
+            _pathfindingData.dest.target = _pathfindTransform;
         }
         private IEnumerator TargetDetection() {
             while (true) {
@@ -59,6 +77,10 @@ namespace SCPNewView.Entities.SCP049 {
         private void UpdateEntityListCache() {
             List<TagList> targets = FindObjectsOfType<TagList>().Where((tl) => tl.HasAnyTag(_targetTags.ToArray())).ToList();
             _cachedTargetList = targets.Select(x => x.transform).ToList();
+        }
+        [ContextMenu("Pathfind To Location")]
+        private void DebugPathfind() {
+            PathfindToLocation(debug_pathfindingLocation);
         }
     }
     public interface IState {
