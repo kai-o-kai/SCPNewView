@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Resources;
+using SCPNewView.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +25,9 @@ namespace SCPNewView {
         #endregion
 
         public GameObject BulletPrefab => bulletPrefab;
+        public List<Tag> FriendlyEntityTags => friendlyEntityTags;
 
         [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private List<Tag> friendlyEntityTags;
     }
 }
