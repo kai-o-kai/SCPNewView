@@ -46,12 +46,8 @@ namespace SCPNewView.Inventory {
             }
         }
 
-        private void OnEnable() {
-            _inputActions.Enable();
-        }
-        private void OnDisable() {
-            _inputActions.Disable();
-        }
+        private void OnEnable() => _inputActions.Enable();
+        private void OnDisable() => _inputActions.Disable();
         private void TrySelectQuickSlot(int slot) {
             if (slot > 3 || slot < 1) throw new ArgumentOutOfRangeException(nameof(slot), slot, "Slot to select must be between 1 and 3!");
             if (_currentItem != null) {
@@ -67,13 +63,11 @@ namespace SCPNewView.Inventory {
             }
             _currentItem?.OnEquip();
         }
-        private void OnDestroy() {
-            Instance = null;
-        }
+        private void OnDestroy() => Instance = null;
         public void OnGameSave() {
-            DataPersistenceManager.Current.PlayerData.PrimarySlot = Functions.FindKeyFromValueDictionary<string, IEquippableItem>(PrimarySlots.Items, _primarySlot);
-            DataPersistenceManager.Current.PlayerData.SecondarySlot = Functions.FindKeyFromValueDictionary<string, IEquippableItem>(SecondarySlots.Items, _secondarySlot);
-            DataPersistenceManager.Current.PlayerData.TertiarySlot = Functions.FindKeyFromValueDictionary<string, IEquippableItem>(TertiarySlots.Items, _tertiarySlot); ;
+            DataPersistenceManager.Current.PlayerData.PrimarySlot = Functions.FindKeyFromValueDictionary(PrimarySlots.Items, _primarySlot);
+            DataPersistenceManager.Current.PlayerData.SecondarySlot = Functions.FindKeyFromValueDictionary(SecondarySlots.Items, _secondarySlot);
+            DataPersistenceManager.Current.PlayerData.TertiarySlot = Functions.FindKeyFromValueDictionary(TertiarySlots.Items, _tertiarySlot);
         }
     }
 }
