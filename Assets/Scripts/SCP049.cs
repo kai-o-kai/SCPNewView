@@ -6,10 +6,11 @@ using SCPNewView.Utils;
 using UnityEngine;
 using Pathfinding;
 using System;
+using SCPNewView.Saving;
 
 namespace SCPNewView.Entities.SCP049 {
     [RequireComponent(typeof(Seeker), typeof(AIPath), typeof(AIDestinationSetter))]
-    public class SCP049 : MonoBehaviour {
+    public class SCP049 : MonoBehaviour, IDataPersisting {
         public bool SeesAnyTarget => _validTargetList.Count != 0;
         public List<Transform> Targets => _validTargetList;
         public (Seeker Seeker, AIPath Path, AIDestinationSetter Dest) PathfindingData => _pathfindingData;
@@ -17,12 +18,15 @@ namespace SCPNewView.Entities.SCP049 {
 
         [SerializeField] Vector2 debug_pathfindingLocation;
 
-        private List<Tag> _targetTags;
         private IState _currentState;
+
+        public IState ChaseState { get; private set; }
+        public IState IdleState { get; private set; }
+
+        private List<Tag> _targetTags;
         private List<Transform> _cachedTargetList;
         private List<Transform> _validTargetList;
         private Transform _pathfindTransform;
-
         private (Seeker seeker, AIPath path, AIDestinationSetter dest) _pathfindingData;
 
         private void Awake() {
@@ -32,17 +36,23 @@ namespace SCPNewView.Entities.SCP049 {
             _pathfindingData.path.maxAcceleration = 1000f;
             _pathfindTransform = new GameObject("SCP049 Pathfind Target").transform;
 
+            ChaseState = new ChaseState(this);
+            IdleState = new IdleState(this);
+
+            SetState(IdleState);
+
             EventSystem.NewEntitySpawned += UpdateEntityListCache;
             UpdateEntityListCache();
         }
         private void Start() {
+            transform.position = DataPersistenceManager.Current.Scp049Data.Position;
             StartCoroutine(TargetDetection());
         }
         private void Update() {
             _currentState?.OnUpdateTick();
         }
 
-        public void SwitchStates(IState newState) {
+        public void SetState(IState newState) {
             if (_currentState == newState) { return; }
             _currentState?.OnExitState();
             _currentState = newState;
@@ -82,10 +92,56 @@ namespace SCPNewView.Entities.SCP049 {
         private void DebugPathfind() {
             PathfindToLocation(debug_pathfindingLocation);
         }
+        public void OnGameSave() {
+            DataPersistenceManager.Current.Scp049Data.Position = transform.position;
+        }
     }
     public interface IState {
         void OnEnterState();
         void OnUpdateTick();
         void OnExitState();
+    }
+    public class ChaseState : IState {
+        private SCP049 _ctx;
+        private Transform _target;
+
+        public ChaseState(SCP049 ctx) {
+            _ctx = ctx;
+        }
+
+        public void OnEnterState() {
+            // TODO : Play 049 Chase VO
+            Transform[] targets = _ctx.Targets.ToArray();
+            targets = targets.OrderBy((x) => Vector2.Distance(_ctx.transform.position, x.position)).ToArray();
+            _target = targets[0];
+        }
+
+        public void OnExitState() {
+            _target = null;
+        }
+
+        public void OnUpdateTick() {
+            _ctx.PathfindToLocation(_target.position);
+            if (!_ctx.SeesAnyTarget) {
+                _ctx.SetState(_ctx.IdleState);
+            }
+        }
+    }
+    public class IdleState : IState {
+        private SCP049 _ctx;
+        public IdleState(SCP049 ctx) => _ctx = ctx;
+        public void OnEnterState() {
+            return;
+        }
+
+        public void OnExitState() {
+            return;
+        }
+        
+        public void OnUpdateTick() {
+            if (_ctx.SeesAnyTarget) {
+                _ctx.SetState(_ctx.ChaseState);
+            }
+        }
     }
 }

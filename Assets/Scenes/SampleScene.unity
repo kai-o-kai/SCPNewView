@@ -554,9 +554,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.00007325411
+    y: 0.000000059604645
     width: 1
-    height: 0.9998535
+    height: 0.9999999
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1128,7 +1128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAABYIexG/x5HWQIAABIFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzk3HJpSU3lqHkB4SmJBOLr4IaY01yJJHH+Ejw3/vSraxQ6cnxHtvd9+uVv4gQtkamNNmYQR/0hzIjxEJZ/Jl1JOPcKBbrdbiBJ3mTXBXBhGNmhfqhEY8DWFWV+CMYD/VVgZxgqBXotCmmvMtZNo6i3BBpQWkjHYhWiH0MSIH/LmZhZAjnsZ34XTC0ywZnfHIQDkwvbQTdrJG5RWTtKqBB8u9eNyp00amsJlWEYwzLaWwrRPijnXsNKO19dgHCrig2FksH/QliG3pQt5h8LIoLLjWkqHHe2FwQE1W8ks3U6uo3TW+3qn0oc50Ei01OZ/+oW/SSBdGV49d2TQJJVwp2O6FHhm1bjDVIXz/2bdXeyp3dCPhrQT1rBdGe8WRdMaHUG9hfN//vXSWlcB2Pd5YvQJ9/f+7CT2cY/OHTIpqE6ivkwZYSx3HHW8eDF7MbzQc98K2KRANLv5YeKXb4QK1xIMw1iHVdqmCvY32JkjJPM4sdONdpo2CCLema1BUuuMK07jrG7ziBmWvmAcankpbvOW6F3AVEuFenyRX1ErvL5dlS71/AlsuvZNCQW86EM84p0wr1SzYcCZd2NqbgrJB2NYL/nm1CONpupkl4+mMJsk0pTf02116O/6eTm6T4nbMNiTunlDYJ5Wrxmg7Hrw11SdXuGfdF2S0MLSOy84N3S/EqdJDg0IVes0MgFo2KS7OwWAVfJV8zgVOaA3OCRUvnHzkRGq2A55fauax1fnBGZr3WXJSi3ftApKTLH4zchLgyzKvDLwL2IfiXbIzOf8FUEsDBBQAAAgIAABYIewOFDhEbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrRScoqhYZKlgZGZZaKBgZlhom6iqbmhsZGFoYmxQZqxUXKSUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAABYIexG/x5HWQIAABIFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAABYIewOFDhEbQAAAHgAAAAJACQAAAAAAAAAAAAAAKYCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAXgMAAAAA
+    dataString: UEsDBBQAAAgIAABYIexji5FlWQIAABEFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzk3HJpSU3lqHkB4SmJBOLr4IaY01yJJHH+Ejw3/vSraxQ6cnxHtvd9+uVv4gQtkamNNmYQR/0hzIjxEJZ/Jl1JOPcKBbrdbiBJ3mTXBXBhGNmhfqhEY8DWFWV+CMYD/VVgZxgqBXotCmmvMtZNo6i3BBpQWkjHYhWiH0MSIH/LmZhZAjnsZ34XTC0ywZnfHIQDkwvbQTdrJG5RWTtKqBB8u9eNyp00amsJlWEYwzLaWwrRPijnXsNKO19dgHCrig2FksH/QliG3pQt5h8LIoLLjWkqHHe2FwQE1W8ks3U6uo3TW+3qn0oc50Ei01OZ/+oW/SSBdGV49d2TQJJVwp2O6FHhm1bjDVIXz/2bdXeyp3dCPhrQT1rBdGe8WRdMaHUG9hfN//vXSWlcB2Pd5YvQJ9/f+7CT2cY/OHTIpqE6ivkwZYSx3HHW8eDF7MbzQc98K2KRANLv5YeKXb4QK1xIMw1iHVdqmCvY32JkjJPM4sdONdpo2CCLema1BUuuMK07jrG7ziBmWvmAcankpbvOW6F3AVEuFenyRX1ErvL5dlS71/AlsuvZNCQW86EM84p0wr1SzYcCZd2NqbgrJB2NYL/nm1CONpupkl4+mMJsk0pTf02116O/6eTm6T4nbMNiTunlDYJ5Wrxmg7Hrw11SdXuGfdF2S0MLSOy84N3S/EqdKDkQtV6DUzAGrZZLgYB4NF8FHyORc4oDU4J1S8b/KRE6nZDnh+SZTHTucHZ2jeZ8lJLd61C0hOsvjJyEmAL7u8MvAuYB+Kd8nO5PwXUEsDBBQAAAgIAABYIewOFDhEbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrRScoqhYZKlgZGZZaKBgZlhom6iqbmhsZGFoYmxQZqxUXKSUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAABYIexji5FlWQIAABEFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAABYIewOFDhEbQAAAHgAAAAJACQAAAAAAAAAAAAAAKYCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAXgMAAAAA
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -1460,6 +1460,7 @@ GameObject:
   - component: {fileID: 1671720806}
   - component: {fileID: 1671720805}
   - component: {fileID: 1671720807}
+  - component: {fileID: 1671720808}
   m_Layer: 0
   m_Name: SCP 049
   m_TagString: Untagged
@@ -1577,7 +1578,7 @@ MonoBehaviour:
   autoRepath:
     mode: 2
     interval: 0.5
-    sensitivity: 10
+    sensitivity: 20
     maximumInterval: 2
     visualizeSensitivity: 0
   targetCompatibility: {fileID: 0}
@@ -1632,6 +1633,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   target: {fileID: 0}
+--- !u!58 &1671720808
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671720801}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!1 &1814358383
 GameObject:
   m_ObjectHideFlags: 0

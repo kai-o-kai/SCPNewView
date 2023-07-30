@@ -32,11 +32,14 @@ namespace SCPNewView.Saving {
     [Serializable]
     public class GameData {
         public PlayerData PlayerData { get => _playerData; }
-        
+        public SCP049Data Scp049Data { get => _scp049Data; }
+
         [SerializeField] PlayerData _playerData;
-        
+        [SerializeField] SCP049Data _scp049Data;
+
         public GameData() {
             _playerData = new PlayerData();
+            _scp049Data = new SCP049Data();
         }
     }
     [Serializable]
@@ -57,6 +60,17 @@ namespace SCPNewView.Saving {
             _primarySlot = "e11standardrifle";
             _secondarySlot = "g19";
             _tertiarySlot = string.Empty;
+        }
+    }
+    [Serializable]
+    public class SCP049Data {
+        public Vector2 Position { get => _position; set => _position = value; }
+
+        [SerializeField] Vector2 _position;
+
+        public SCP049Data() {
+            // Defaults Here
+            _position = new Vector2(3f, -2f);
         }
     }
     public interface IDataPersisting {
