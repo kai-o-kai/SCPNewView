@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using SCPNewView.Management;
 using SCPNewView.Utils;
+using Random = UnityEngine.Random;
 using UnityEngine;
 using Pathfinding;
 using System;
 using SCPNewView.Saving;
+using SCPNewView.Audio;
 
 namespace SCPNewView.Entities.SCP049 {
     [RequireComponent(typeof(Seeker), typeof(AIPath), typeof(AIDestinationSetter))]
@@ -110,7 +112,8 @@ namespace SCPNewView.Entities.SCP049 {
         }
 
         public void OnEnterState() {
-            // TODO : Play 049 Chase VO
+            string soundName = $"scp_049_spotted_{Random.Range(0, 4)}";
+            AudioManager.Instance.PlaySoundAtPosition(soundName, _ctx.transform.position);
             Transform[] targets = _ctx.Targets.ToArray();
             targets = targets.OrderBy((x) => Vector2.Distance(_ctx.transform.position, x.position)).ToArray();
             _target = targets[0];
