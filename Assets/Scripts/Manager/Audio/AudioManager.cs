@@ -12,7 +12,7 @@ namespace SCPNewView.Audio {
         } private set => s_instance = value; }
         static AudioManager s_instance;
 
-        Sound[] sounds;
+        Sound[] _sounds;
 
         AudioMixerGroup _sfxGroup;
         AudioMixerGroup _musicGroup;
@@ -27,10 +27,10 @@ namespace SCPNewView.Audio {
             SoundGrouping[] soundGroupings = Resources.LoadAll<SoundGrouping>("Sound Groupings");
             SoundGrouping soundsForThisManager = Array.Find(soundGroupings, check => check.AssociatedScene == gameObject.scene);
             if (soundsForThisManager == null) { Debug.LogWarning($"SCPNewView Audio Manager: Cannot find an associated sound grouping for this scene! Create a sound grouping for {gameObject.scene.name}.", this); return; }
-            sounds = soundsForThisManager.Sounds;
+            _sounds = soundsForThisManager.Sounds;
 
 
-            foreach (Sound toInitialize in sounds) {
+            foreach (Sound toInitialize in _sounds) {
                 AudioSource newSource = gameObject.AddComponent<AudioSource>();
                 toInitialize.Initialize(newSource, _musicGroup, _sfxGroup);
             }
@@ -44,12 +44,33 @@ namespace SCPNewView.Audio {
         public void PlaySoundAtPosition(string name, Vector2 pos) {
             FindSoundByName(name)?.PlayAtPosition(pos);
         }
+        public bool AnyWithPrefixPlaying(string prefix) {
+            Sound[] soundsWithPrefix = Array.FindAll(_sounds, x => x.name.StartsWith(prefix));
+            foreach (Sound s in soundsWithPrefix) {
+                if (s.IsPlaying) return true;
+            }
+            return false;
+        }
+        public bool IsPlaying(string name) {
+            bool? isPlaying = FindSoundByName(name)?.IsPlaying;
+            if (isPlaying != null) {
+                return (bool)isPlaying;
+            }
+            return false;
+        }
+        public void StopAllWithPrefix(string prefix) {
+            Sound[] soundsWithPrefix = Array.FindAll(_sounds, x => x.name.StartsWith(prefix));
+            foreach (Sound s in soundsWithPrefix) {
+                s.Stop();
+            }
+        }
+
         Sound FindSoundByName(string str) {
             if (string.IsNullOrWhiteSpace(str)) return null;
 
             Sound output = null;
             try {
-                output = Array.Find(sounds, s => s.name == str);
+                output = Array.Find(_sounds, s => s.name == str);
             } catch (Exception err) {
                 Debug.LogWarning(err.Message);
             }

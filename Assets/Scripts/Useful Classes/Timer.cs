@@ -39,5 +39,8 @@ namespace SCPNewView.Utils {
             }
             if (_timerIsActive) _onTimerComplete?.Invoke();
         }
+        public void Cancel() {
+            TimerIsActive = false;
+        }
     }
 }

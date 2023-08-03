@@ -17,13 +17,16 @@ namespace SCPNewView.Entities.SCP049 {
         public List<Transform> Targets => _validTargetList;
         public (Seeker Seeker, AIPath Path, AIDestinationSetter Dest) PathfindingData => _pathfindingData;
         public float Speed { get => _pathfindingData.path.maxSpeed; set => _pathfindingData.path.maxSpeed = value; }
+        [HideInInspector] public Vector2 RememberedPosition;
+        [field: SerializeField] public float MemoryTime { get; private set; }
 
-        [SerializeField] Vector2 debug_pathfindingLocation;
+        [SerializeField] private Vector2 debug_pathfindingLocation;
 
         private IState _currentState;
 
         public IState ChaseState { get; private set; }
-        public IState IdleState { get; private set; }
+        public IState IdleState { get; private set; } 
+        public IState SearchState { get; private set; }
 
         private List<Tag> _targetTags;
         private List<Transform> _cachedTargetList;
@@ -40,6 +43,7 @@ namespace SCPNewView.Entities.SCP049 {
 
             ChaseState = new ChaseState(this);
             IdleState = new IdleState(this);
+            SearchState = new SearchState(this);
 
             SetState(IdleState);
 
@@ -97,6 +101,9 @@ namespace SCPNewView.Entities.SCP049 {
         public void OnGameSave() {
             DataPersistenceManager.Current.Scp049Data.Position = transform.position;
         }
+        private void OnValidate() {
+            MemoryTime = Mathf.Clamp(MemoryTime, 0f, Mathf.Infinity);
+        }
     }
     public interface IState {
         void OnEnterState();
@@ -115,8 +122,7 @@ namespace SCPNewView.Entities.SCP049 {
             string soundName = $"scp_049_spotted_{Random.Range(0, 4)}";
             AudioManager.Instance.PlaySoundAtPosition(soundName, _ctx.transform.position);
             Transform[] targets = _ctx.Targets.ToArray();
-            targets = targets.OrderBy((x) => Vector2.Distance(_ctx.transform.position, x.position)).ToArray();
-            _target = targets[0];
+            _target = GetClosestTarget(targets);
         }
 
         public void OnExitState() {
@@ -126,7 +132,37 @@ namespace SCPNewView.Entities.SCP049 {
         public void OnUpdateTick() {
             _ctx.PathfindToLocation(_target.position);
             if (!_ctx.SeesAnyTarget) {
+                _ctx.RememberedPosition = _target.position;
+                _ctx.SetState(_ctx.SearchState);
+            }
+        }
+        private Transform GetClosestTarget(Transform[] targets) {
+            targets = targets.OrderBy((x) => Vector2.Distance(_ctx.transform.position, x.position)).ToArray();
+            return targets[0];
+        }
+    }
+    public class SearchState : IState {
+        private SCP049 _ctx;
+        private Timer _memoryTimer;
+        public SearchState(SCP049 ctx) => _ctx = ctx;
+
+        public void OnEnterState() {
+            Debug.Log("Entering search state", _ctx);
+            _memoryTimer = new Timer(() => {
                 _ctx.SetState(_ctx.IdleState);
+            }, _ctx.MemoryTime);
+        }
+
+        public void OnExitState() {
+            Debug.Log("Exiting search state", _ctx);
+            _ctx.RememberedPosition = Vector2.zero;
+            _memoryTimer.Cancel();
+        }
+
+        public void OnUpdateTick() {
+            _ctx.PathfindToLocation(_ctx.RememberedPosition);
+            if (_ctx.SeesAnyTarget) {
+                _ctx.SetState(_ctx.ChaseState);
             }
         }
     }
