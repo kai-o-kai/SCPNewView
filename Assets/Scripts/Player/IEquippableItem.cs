@@ -15,6 +15,8 @@ namespace SCPNewView.Inventory {
         void OnFireKeyStart();
         void OnFireKeyEnd();
         void OnReloadKeyPress();
+        string SaveData();
+        void LoadData(string data);
     }
     public class NullIEquippableItem : IEquippableItem {
         public bool CanDeEquip => true;
@@ -22,6 +24,10 @@ namespace SCPNewView.Inventory {
         public int Slot => 1;
 
         public bool HasAccessToDoor(Door door) => true;
+
+        public void LoadData(string data) {
+            Debug.LogWarning("Null IEquippable Item");
+        }
 
         public void OnDeEquip() {
             Debug.LogWarning("Null IEquippable Item");
@@ -41,6 +47,10 @@ namespace SCPNewView.Inventory {
 
         public void OnReloadKeyPress() {
             Debug.LogWarning("Null IEquippable Item");
+        }
+
+        public string SaveData() {
+            return string.Empty;
         }
     }
 }

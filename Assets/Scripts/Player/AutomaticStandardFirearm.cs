@@ -20,7 +20,6 @@ namespace SCPNewView.Inventory.InventoryItems {
         private bool _fireKeyIsPressed;
         private GameObject _bulletPrefab;
         private Transform _firePoint;
-        // TODO : shooting sound should be a loop and play on fire key start and stop on fire key end.
         public AutomaticStandardFirearm(string equipSound = default, string fireSound = default, int ammoPerMag = 30, int roundsPerMinute = 292, float reloadTimeSeconds = 2.5f, AmmoType ammoType = AmmoType.A762, float damage = 60f) {
             _equipSound = equipSound;
             _fireSound = fireSound;
@@ -59,11 +58,20 @@ namespace SCPNewView.Inventory.InventoryItems {
         }
         private void Fire() {
             if (!_fireKeyIsPressed) return;
+            if (_currentAmmo <= 0) return; // TODO : Dryfire sound
             Object.Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation).GetComponent<Bullet>().Init(20f, Layers.PlayerFiredBullet, _damage);
             AudioManager.Instance.PlaySoundByName(_fireSound);
+            _currentAmmo--;
             PrepareNextShot();
         }
         private void PrepareNextShot() => new Timer(Fire, _secondsBetweenShots);
+        public string SaveData() {
+            string output = $"{_currentAmmo}";
+            return output;
+        }
+        public void LoadData(string data) {
+            _currentAmmo = int.Parse(data);
+        }
     }
     public enum AmmoType {
         A9mm, A556, A762, ABuckshot

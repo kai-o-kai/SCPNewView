@@ -31,9 +31,9 @@ namespace SCPNewView.Inventory {
             TrySelectQuickSlot(1);
 
             void LoadSavedItems() {
-                string primarySlotName = DataPersistenceManager.Current.PlayerData.PrimarySlot;
-                string secondarySlotName = DataPersistenceManager.Current.PlayerData.SecondarySlot;
-                string tertiarySlotName = DataPersistenceManager.Current.PlayerData.TertiarySlot;
+                string primarySlotName = DataPersistenceManager.Current.PlayerData.PrimarySlot.Item;
+                string secondarySlotName = DataPersistenceManager.Current.PlayerData.SecondarySlot.Item;
+                string tertiarySlotName = DataPersistenceManager.Current.PlayerData.TertiarySlot.Item;
                 if (PrimarySlots.Items.ContainsKey(primarySlotName)) {
                     _primarySlot = PrimarySlots.Items[primarySlotName];
                 }
@@ -43,6 +43,9 @@ namespace SCPNewView.Inventory {
                 if (TertiarySlots.Items.ContainsKey(tertiarySlotName)) {
                     _tertiarySlot = TertiarySlots.Items[tertiarySlotName];
                 }
+                _primarySlot?.LoadData(DataPersistenceManager.Current.PlayerData.PrimarySlot.Data);
+                _secondarySlot?.LoadData(DataPersistenceManager.Current.PlayerData.SecondarySlot.Data);
+                _tertiarySlot?.LoadData(DataPersistenceManager.Current.PlayerData.TertiarySlot.Data);
             }
         }
 
@@ -65,9 +68,18 @@ namespace SCPNewView.Inventory {
         }
         private void OnDestroy() => Instance = null;
         public void OnGameSave() {
-            DataPersistenceManager.Current.PlayerData.PrimarySlot = Functions.FindKeyFromValueDictionary(PrimarySlots.Items, _primarySlot);
-            DataPersistenceManager.Current.PlayerData.SecondarySlot = Functions.FindKeyFromValueDictionary(SecondarySlots.Items, _secondarySlot);
-            DataPersistenceManager.Current.PlayerData.TertiarySlot = Functions.FindKeyFromValueDictionary(TertiarySlots.Items, _tertiarySlot);
+            DataPersistenceManager.Current.PlayerData.PrimarySlot = new PlayerInventorySlot() {
+                Item = Functions.FindKeyFromValueDictionary(PrimarySlots.Items, _primarySlot),
+                Data = _primarySlot?.SaveData()
+            };
+            DataPersistenceManager.Current.PlayerData.SecondarySlot = new() {
+                Item = Functions.FindKeyFromValueDictionary(SecondarySlots.Items, _secondarySlot),
+                Data = _secondarySlot?.SaveData()
+            };
+            DataPersistenceManager.Current.PlayerData.TertiarySlot = new() {
+                Item = Functions.FindKeyFromValueDictionary(TertiarySlots.Items, _tertiarySlot),
+                Data = _tertiarySlot?.SaveData()
+            };
         }
     }
 }

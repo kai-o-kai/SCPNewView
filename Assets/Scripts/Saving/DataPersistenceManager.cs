@@ -45,22 +45,29 @@ namespace SCPNewView.Saving {
     [Serializable]
     public class PlayerData {
         public Vector2 Position { get => _position; set => _position = value; }
-        public string PrimarySlot { get => _primarySlot; set => _primarySlot = value; }
-        public string SecondarySlot { get => _secondarySlot; set => _secondarySlot = value; }
-        public string TertiarySlot { get => _tertiarySlot; set => _tertiarySlot = value; }
+        public PlayerInventorySlot PrimarySlot { get => _primarySlot; set => _primarySlot = value; }
+        public PlayerInventorySlot SecondarySlot { get => _secondarySlot; set => _secondarySlot = value; }
+        public PlayerInventorySlot TertiarySlot { get => _tertiarySlot; set => _tertiarySlot = value; }
 
         [SerializeField] Vector2 _position;
-        [SerializeField] string _primarySlot;
-        [SerializeField] string _secondarySlot;
-        [SerializeField] string _tertiarySlot;
+        [SerializeField] PlayerInventorySlot _primarySlot;
+        [SerializeField] PlayerInventorySlot _secondarySlot;
+        [SerializeField] PlayerInventorySlot _tertiarySlot;
 
         public PlayerData() {
             // Defaults Here
             _position = new Vector2(1f, 2f);
-            _primarySlot = "e11standardrifle";
-            _secondarySlot = "g19";
-            _tertiarySlot = string.Empty;
+            _primarySlot = new PlayerInventorySlot();
+            _secondarySlot = new PlayerInventorySlot();
+            _tertiarySlot = new PlayerInventorySlot();
+            _primarySlot.Item = "e11standardrifle";
+            _secondarySlot.Item = "g19";
         }
+    }
+    [Serializable]
+    public struct PlayerInventorySlot {
+        public string Item;
+        public string Data;
     }
     [Serializable]
     public class SCP049Data {
