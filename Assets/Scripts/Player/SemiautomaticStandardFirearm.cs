@@ -75,6 +75,7 @@ namespace SCPNewView.Inventory.InventoryItems {
         }
 
         public void LoadData(string data) {
+            if (string.IsNullOrWhiteSpace(data)) return;
             _currentAmmo = int.Parse(data);
         }
     }

@@ -10,6 +10,7 @@ namespace SCPNewView.Inventory.InventoryItems {
 
         private string _equipSound;
         private string _fireSound;
+        private string _reloadSound;
         private int _ammoPerMag;
         private int _currentAmmo;
         private float _secondsBetweenShots;
@@ -20,7 +21,10 @@ namespace SCPNewView.Inventory.InventoryItems {
         private bool _fireKeyIsPressed;
         private GameObject _bulletPrefab;
         private Transform _firePoint;
-        public AutomaticStandardFirearm(string equipSound = default, string fireSound = default, int ammoPerMag = 30, int roundsPerMinute = 292, float reloadTimeSeconds = 2.5f, AmmoType ammoType = AmmoType.A762, float damage = 60f) {
+
+        private bool _magAvailable => PlayerInventory.Instance.MagazineCountDic[_ammoType] > 0;
+
+        public AutomaticStandardFirearm(string equipSound = default, string fireSound = default, string reloadSound = default, int ammoPerMag = 30, int roundsPerMinute = 292, float reloadTimeSeconds = 2.5f, AmmoType ammoType = AmmoType.A762, float damage = 60f) {
             _equipSound = equipSound;
             _fireSound = fireSound;
             _ammoPerMag = ammoPerMag;
@@ -30,6 +34,7 @@ namespace SCPNewView.Inventory.InventoryItems {
             _ammoType = ammoType;
             _bulletPrefab = ReferenceManager.Current.BulletPrefab;
             _damage = damage;
+            _reloadSound = reloadSound;
 
             Transform player = Object.FindObjectOfType<PlayerMovement>().transform;
             _firePoint = player.GetChild(0);
@@ -51,9 +56,15 @@ namespace SCPNewView.Inventory.InventoryItems {
             AudioManager.Instance.StopSoundByName(_fireSound);
         }
         public async void OnReloadKeyPress() {
+            if (!_magAvailable) {
+                // TODO : Maybe this should play a sound or alert for no mags left?
+                return;
+            }
             CanDeEquip = false;
             await Task.Delay(Mathf.RoundToInt(_reloadTimeMilliseconds));
-            // reload
+            AudioManager.Instance.PlaySoundByName(_reloadSound);
+            PlayerInventory.Instance.MagazineCountDic[_ammoType] -= 1;
+            _currentAmmo = _ammoPerMag;
             CanDeEquip = true;
         }
         private void Fire() {
@@ -70,6 +81,7 @@ namespace SCPNewView.Inventory.InventoryItems {
             return output;
         }
         public void LoadData(string data) {
+            if (string.IsNullOrWhiteSpace(data)) return;
             _currentAmmo = int.Parse(data);
         }
     }

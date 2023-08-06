@@ -1,6 +1,7 @@
 using UnityEngine;
 using SCPNewView.Inventory.InventoryItems;
 using System;
+using System.Collections.Generic;
 using SCPNewView.Saving;
 using SCPNewView.Utils;
 
@@ -9,6 +10,7 @@ namespace SCPNewView.Inventory {
         public static PlayerInventory Instance { get; private set; }
 
         public IEquippableItem CurrentlyEquippedItem => _currentItem;
+        public Dictionary<AmmoType, int> MagazineCountDic { get; private set; }
 
         private InputSettings _inputActions;
 
@@ -27,25 +29,27 @@ namespace SCPNewView.Inventory {
             _inputActions.Player.PrimarySelect.performed += (ctx) => TrySelectQuickSlot(1);
             _inputActions.Player.SecondarySelect.performed += (ctx) => TrySelectQuickSlot(2);
             _inputActions.Player.TertiarySelect.performed += (ctx) => TrySelectQuickSlot(3);
-            LoadSavedItems();
+            LoadSavedInventoryData();
             TrySelectQuickSlot(1);
 
-            void LoadSavedItems() {
+            void LoadSavedInventoryData() {
                 string primarySlotName = DataPersistenceManager.Current.PlayerData.PrimarySlot.Item;
                 string secondarySlotName = DataPersistenceManager.Current.PlayerData.SecondarySlot.Item;
                 string tertiarySlotName = DataPersistenceManager.Current.PlayerData.TertiarySlot.Item;
-                if (PrimarySlots.Items.ContainsKey(primarySlotName)) {
+                if (!string.IsNullOrWhiteSpace(primarySlotName) && PrimarySlots.Items.ContainsKey(primarySlotName)) {
                     _primarySlot = PrimarySlots.Items[primarySlotName];
                 }
-                if (SecondarySlots.Items.ContainsKey(secondarySlotName)) {
+                if (!string.IsNullOrWhiteSpace(secondarySlotName) && SecondarySlots.Items.ContainsKey(secondarySlotName)) {
                     _secondarySlot = SecondarySlots.Items[secondarySlotName];
                 }
-                if (TertiarySlots.Items.ContainsKey(tertiarySlotName)) {
+                if (!string.IsNullOrWhiteSpace(tertiarySlotName) && TertiarySlots.Items.ContainsKey(tertiarySlotName)) {
                     _tertiarySlot = TertiarySlots.Items[tertiarySlotName];
                 }
                 _primarySlot?.LoadData(DataPersistenceManager.Current.PlayerData.PrimarySlot.Data);
                 _secondarySlot?.LoadData(DataPersistenceManager.Current.PlayerData.SecondarySlot.Data);
                 _tertiarySlot?.LoadData(DataPersistenceManager.Current.PlayerData.TertiarySlot.Data);
+                
+                MagazineCountDic = DataPersistenceManager.Current.PlayerData.MagazineCountDic;
             }
         }
 
@@ -80,6 +84,8 @@ namespace SCPNewView.Inventory {
                 Item = Functions.FindKeyFromValueDictionary(TertiarySlots.Items, _tertiarySlot),
                 Data = _tertiarySlot?.SaveData()
             };
+            Debug.Log(MagazineCountDic.ToString());
+            DataPersistenceManager.Current.PlayerData.MagazineCountDic = MagazineCountDic;
         }
     }
 }

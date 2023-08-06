@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using SCPNewView.Inventory.InventoryItems;
 
 namespace SCPNewView.Saving {
     public static class DataPersistenceManager {
@@ -48,11 +49,27 @@ namespace SCPNewView.Saving {
         public PlayerInventorySlot PrimarySlot { get => _primarySlot; set => _primarySlot = value; }
         public PlayerInventorySlot SecondarySlot { get => _secondarySlot; set => _secondarySlot = value; }
         public PlayerInventorySlot TertiarySlot { get => _tertiarySlot; set => _tertiarySlot = value; }
+        public Dictionary<AmmoType, int> MagazineCountDic { get {
+                Dictionary<AmmoType, int> output = new Dictionary<AmmoType, int>();
+                foreach (MagCountDic v in _magCount) {
+                    output.Add(v.AmmoType, v.Count);
+                }
+                return output;
+            } set {
+                _magCount.Clear();  
+                Dictionary<AmmoType, int> a = value;
+                Debug.Log(a);
+                foreach (KeyValuePair<AmmoType, int> kvp in a) {
+                    _magCount.Add(new() { AmmoType = kvp.Key, Count = kvp.Value });
+                }
+            } 
+        }
 
         [SerializeField] Vector2 _position;
         [SerializeField] PlayerInventorySlot _primarySlot;
         [SerializeField] PlayerInventorySlot _secondarySlot;
         [SerializeField] PlayerInventorySlot _tertiarySlot;
+        [SerializeField] List<MagCountDic> _magCount;
 
         public PlayerData() {
             // Defaults Here
@@ -62,12 +79,21 @@ namespace SCPNewView.Saving {
             _tertiarySlot = new PlayerInventorySlot();
             _primarySlot.Item = "e11standardrifle";
             _secondarySlot.Item = "g19";
+            _magCount = new List<MagCountDic>() {
+                { new MagCountDic() { AmmoType = AmmoType.A9mm, Count = 3 } },
+                { new MagCountDic() { AmmoType = AmmoType.A762, Count = 2 } }
+            };
         }
     }
     [Serializable]
     public struct PlayerInventorySlot {
         public string Item;
         public string Data;
+    }
+    [Serializable]
+    public struct MagCountDic {
+        public AmmoType AmmoType;
+        public int Count;
     }
     [Serializable]
     public class SCP049Data {
