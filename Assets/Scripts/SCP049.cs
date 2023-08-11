@@ -35,7 +35,6 @@ namespace SCPNewView.Entities.SCP049 {
         private (Seeker seeker, AIPath path, AIDestinationSetter dest) _pathfindingData;
 
         private void Awake() {
-            _targetTags = ReferenceManager.Current.FriendlyEntityTags;
             _validTargetList = new List<Transform>();
             _pathfindingData = (GetComponent<Seeker>(), GetComponent<AIPath>(), GetComponent<AIDestinationSetter>());
             _pathfindingData.path.maxAcceleration = 1000f;
@@ -44,15 +43,14 @@ namespace SCPNewView.Entities.SCP049 {
             ChaseState = new ChaseState(this);
             IdleState = new IdleState(this);
             SearchState = new SearchState(this);
-
-            SetState(IdleState);
-
-            EventSystem.NewEntitySpawned += UpdateEntityListCache;
             UpdateEntityListCache();
         }
         private void Start() {
             transform.position = DataPersistenceManager.Current.Scp049Data.Position;
+            _targetTags = ReferenceManager.Current.FriendlyEntityTags;
+            SetState(IdleState);
             StartCoroutine(TargetDetection());
+            EventSystem.NewEntitySpawned += UpdateEntityListCache;
         }
         private void Update() {
             _currentState?.OnUpdateTick();
