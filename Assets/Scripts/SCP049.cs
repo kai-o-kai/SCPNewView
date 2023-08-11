@@ -52,9 +52,7 @@ namespace SCPNewView.Entities.SCP049 {
             StartCoroutine(TargetDetection());
             EventSystem.NewEntitySpawned += UpdateEntityListCache;
         }
-        private void Update() {
-            _currentState?.OnUpdateTick();
-        }
+        private void Update() => _currentState?.OnUpdateTick();
 
         public void SetState(IState newState) {
             if (_currentState == newState) { return; }
@@ -87,23 +85,15 @@ namespace SCPNewView.Entities.SCP049 {
                 yield return new WaitForSeconds(0.5f);
             }
         }
-        private void OnDestroy() {
-            EventSystem.NewEntitySpawned -= UpdateEntityListCache;
-        }
+        private void OnDestroy() => EventSystem.NewEntitySpawned -= UpdateEntityListCache;
         private void UpdateEntityListCache() {
             List<TagList> targets = FindObjectsOfType<TagList>().Where((tl) => tl.HasAnyTag(_targetTags.ToArray())).ToList();
             _cachedTargetList = targets.Select(x => x.transform).ToList();
         }
         [ContextMenu("Pathfind To Location")]
-        private void DebugPathfind() {
-            PathfindToLocation(debug_pathfindingLocation);
-        }
-        public void OnGameSave() {
-            DataPersistenceManager.Current.Scp049Data.Position = transform.position;
-        }
-        private void OnValidate() {
-            MemoryTime = Mathf.Clamp(MemoryTime, 0f, Mathf.Infinity);
-        }
+        private void DebugPathfind() => PathfindToLocation(debug_pathfindingLocation);
+        public void OnGameSave() => DataPersistenceManager.Current.Scp049Data.Position = transform.position;
+        private void OnValidate() => MemoryTime = Mathf.Clamp(MemoryTime, 0f, Mathf.Infinity);
     }
     public interface IState {
         void OnEnterState();
