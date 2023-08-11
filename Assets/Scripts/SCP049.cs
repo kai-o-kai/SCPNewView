@@ -78,10 +78,12 @@ namespace SCPNewView.Entities.SCP049 {
                     #if UNITY_EDITOR
                     if (rayHit.collider == null) continue; // I can't see a situation this statement ever returns true in prod, but theres a chance it happens in debug.
                     #endif
-                    TagList colliderRayHit = rayHit.collider.GetComponent<TagList>();
-                    if (!colliderRayHit) continue; // Walls shouldn't ever have a TagList component, so if this statement returns true its likely a wall (or a non entity)
-                    if (!colliderRayHit.HasAnyTag(_targetTags.ToArray())) continue;
 
+                    if (!rayHit.collider.TryGetComponent<TagList>(out var colliderRayHit)) {
+                        continue;
+                    } else {
+                        if (!colliderRayHit.HasAnyTag(_targetTags.ToArray())) continue;
+                    }
                     _validTargetList.Add(toCheck);
                 }
                 yield return new WaitForSeconds(0.5f);
