@@ -49,6 +49,10 @@ namespace SCPNewView.Saving {
         public PlayerInventorySlot PrimarySlot { get => _primarySlot; set => _primarySlot = value; }
         public PlayerInventorySlot SecondarySlot { get => _secondarySlot; set => _secondarySlot = value; }
         public PlayerInventorySlot TertiarySlot { get => _tertiarySlot; set => _tertiarySlot = value; }
+        /// <summary>
+        /// This field is a hack. Don't try and edit pieces from the getter, you must set it again.
+        /// Fix this later if you can but it'll work....
+        /// </summary>
         public Dictionary<AmmoType, int> MagazineCountDic { get {
                 Dictionary<AmmoType, int> output = new Dictionary<AmmoType, int>();
                 foreach (MagCountDic v in _magCount) {
@@ -58,10 +62,9 @@ namespace SCPNewView.Saving {
             } set {
                 _magCount.Clear();  
                 Dictionary<AmmoType, int> a = value;
-                Debug.Log(a);
-                foreach (KeyValuePair<AmmoType, int> kvp in a) {
+                foreach (KeyValuePair<AmmoType, int> kvp in a) 
                     _magCount.Add(new() { AmmoType = kvp.Key, Count = kvp.Value });
-                }
+                
             } 
         }
 
