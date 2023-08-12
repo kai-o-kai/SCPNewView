@@ -4,6 +4,8 @@ using UnityEngine;
 using LightType = UnityEngine.Rendering.Universal.Light2D.LightType;
 using UnityEngine.Rendering.Universal;
 using System;
+using Unity.Collections;
+using SCPNewView.Utils;
 
 namespace SCPNewView {
     [RequireComponent(typeof(Light2D))]
@@ -26,6 +28,7 @@ namespace SCPNewView {
         }
         private void Start() {
             _lightableObjects = ILightable.GetLightableObjects();
+            ILightable.LightableObjectsListChanged += OnLightableObjectsListChanged;
             if (_type == LightType.Global) {
                 foreach (var lightable in _lightableObjects) {
                     lightable.GetComponent<ILightable>().IsLitBy[_light] = true;
@@ -35,15 +38,39 @@ namespace SCPNewView {
         }
         private void Update() {
             if (_type == LightType.Global) return; // We only ever need to perform global light checks once and we do it in start, so don't run it in update.
-            foreach (var lightable in _lightableObjects) {
-                if (_type == LightType.Point) { // Point == Spot
-                    // TODO : Angle checking
+            if (_type == LightType.Point) { // Point == Spot
+                float fov = _light.pointLightOuterAngle; // We use outers because even a little light counts as being lit by the light.
+                float radius = _light.pointLightOuterRadius;
+                float zAngle = transform.eulerAngles.z;
+                float minAngle = zAngle + (fov / 2);
+                float maxAngle = zAngle - (fov / 2);
+                foreach (var lightable in _lightableObjects) {
+                    float distance = Vector2.Distance(transform.position, lightable.position);
+                    ILightable lightableObjectInterface = lightable.GetComponent<ILightable>();
+                    if (distance > radius) {
+                        lightableObjectInterface.IsLitBy[_light] = false;
+                    } else {
+                        Vector2 dirToLightable = lightable.position - transform.position;
+                        float angleToLightable = Utilities.DirToAngle(dirToLightable);
+                        bool isInLightFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
+                        lightableObjectInterface.IsLitBy[_light] = isInLightFOV;
+                    }
                 }
             }
         }
         private void OnDestroy() {
+            ILightable.LightableObjectsListChanged -= OnLightableObjectsListChanged;
             LightListChanged?.Invoke();
             s_lights.Remove(this);
+        }
+        private void OnLightableObjectsListChanged() => _lightableObjects = ILightable.GetLightableObjects();
+    }
+}
+namespace SCPNewView.Utils {
+    public static class Utilities {
+        public static float DirToAngle(Vector2 dir) {
+            float output = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+            return output;
         }
     }
 }
