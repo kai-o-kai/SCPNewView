@@ -83,8 +83,7 @@ namespace SCPNewView.Inventory {
             DataPersistenceManager.Current.PlayerData.TertiarySlot = new() {
                 Item = Functions.FindKeyFromValueDictionary(TertiarySlots.Items, _tertiarySlot),
                 Data = _tertiarySlot?.SaveData()
-            };
-            Debug.Log(MagazineCountDic.ToString());
+            };  
             DataPersistenceManager.Current.PlayerData.MagazineCountDic = MagazineCountDic;
         }
     }

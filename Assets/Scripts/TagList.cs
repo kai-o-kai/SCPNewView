@@ -9,6 +9,7 @@ namespace SCPNewView {
 
         public bool HasTag(Tag t) => tags.Contains(t);
         public bool HasAnyTag(Tag[] toCheck) {
+            if (toCheck == null) return false;
             foreach (Tag t in toCheck) {
                 if (tags.Contains(t)) return true;
             }

@@ -47,7 +47,11 @@ namespace SCPNewView.Entities.SCP049 {
         }
         private void Start() {
             transform.position = DataPersistenceManager.Current.Scp049Data.Position;
-            _targetTags = ReferenceManager.Current.FriendlyEntityTags;
+            ReferenceManager refManager = ReferenceManager.Current;
+            if (refManager == null) {
+                Debug.Log("Reference Manager Null", this);
+            }
+            _targetTags = refManager.FriendlyEntityTags;
             SetState(IdleState);
             StartCoroutine(TargetDetection());
             EventSystem.NewEntitySpawned += UpdateEntityListCache;
@@ -87,7 +91,7 @@ namespace SCPNewView.Entities.SCP049 {
         }
         private void OnDestroy() => EventSystem.NewEntitySpawned -= UpdateEntityListCache;
         private void UpdateEntityListCache() {
-            List<TagList> targets = FindObjectsOfType<TagList>().Where((tl) => tl.HasAnyTag(_targetTags.ToArray())).ToList();
+            List<TagList> targets = FindObjectsOfType<TagList>()?.Where((tl) => tl.HasAnyTag(_targetTags?.ToArray()))?.ToList();
             _cachedTargetList = targets.Select(x => x.transform).ToList();
         }
         [ContextMenu("Pathfind To Location")]

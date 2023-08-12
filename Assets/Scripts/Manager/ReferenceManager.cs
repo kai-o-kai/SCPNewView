@@ -10,14 +10,12 @@ namespace SCPNewView {
     public class ReferenceManager : ScriptableObject {
         #region Instance
         public static ReferenceManager Current {
-            get {
-                if (s_current == null) {
-                    ReferenceManager loaded = Resources.Load<ReferenceManager>("Reference Manager");
-                    if (loaded == null) {
-                        Debug.LogWarning("No reference manager created! Create one and place in the Resources folder under the name \"Reference Manager\"");                        
-                    }
-                    s_current = loaded;
+            get {        
+                ReferenceManager loaded = Resources.Load<ReferenceManager>("Reference Manager");
+                if (loaded == null) {
+                    Debug.LogWarning("No reference manager created! Create one and place in the Resources folder under the name \"Reference Manager\"");
                 }
+                s_current = loaded;
                 return s_current;
             }
         }
