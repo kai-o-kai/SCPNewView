@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using SCPNewView.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SCPNewView {
@@ -9,7 +10,12 @@ namespace SCPNewView {
 
         public bool HasTag(Tag t) => tags.Contains(t);
         public bool HasAnyTag(Tag[] toCheck) {
-            if (toCheck == null) return false;
+            foreach (Tag t in toCheck) {
+                if (tags.Contains(t)) return true;
+            }
+            return false;
+        }
+        public bool HasAnyTag(List<Tag> toCheck) {
             foreach (Tag t in toCheck) {
                 if (tags.Contains(t)) return true;
             }

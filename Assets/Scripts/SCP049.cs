@@ -5,10 +5,12 @@ using SCPNewView.Management;
 using SCPNewView.Utils;
 using Random = UnityEngine.Random;
 using UnityEngine;
+using Timer = SCPNewView.Utils.Timer;
 using Pathfinding;
 using System;
 using SCPNewView.Saving;
 using SCPNewView.Audio;
+using Unity.VisualScripting;
 
 namespace SCPNewView.Entities.SCP049 {
     [RequireComponent(typeof(Seeker), typeof(AIPath), typeof(AIDestinationSetter))]
@@ -43,16 +45,13 @@ namespace SCPNewView.Entities.SCP049 {
             ChaseState = new ChaseState(this);
             IdleState = new IdleState(this);
             SearchState = new SearchState(this);
-            UpdateEntityListCache();
         }
         private void Start() {
             transform.position = DataPersistenceManager.Current.Scp049Data.Position;
             ReferenceManager refManager = ReferenceManager.Current;
-            if (refManager == null) {
-                Debug.Log("Reference Manager Null", this);
-            }
             _targetTags = refManager.FriendlyEntityTags;
             SetState(IdleState);
+            UpdateEntityListCache();
             StartCoroutine(TargetDetection());
             EventSystem.NewEntitySpawned += UpdateEntityListCache;
         }
@@ -91,7 +90,7 @@ namespace SCPNewView.Entities.SCP049 {
         }
         private void OnDestroy() => EventSystem.NewEntitySpawned -= UpdateEntityListCache;
         private void UpdateEntityListCache() {
-            List<TagList> targets = FindObjectsOfType<TagList>()?.Where((tl) => tl.HasAnyTag(_targetTags?.ToArray()))?.ToList();
+            List<TagList> targets = FindObjectsOfType<TagList>()?.Where((tl) => tl.HasAnyTag(_targetTags))?.ToList();
             _cachedTargetList = targets.Select(x => x.transform).ToList();
         }
         [ContextMenu("Pathfind To Location")]
