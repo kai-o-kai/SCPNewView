@@ -26,6 +26,7 @@ namespace SCPNewView.Inventory {
             _inputActions = new InputSettings();
             _inputActions.Player.Fire.started += (ctx) => _currentItem?.OnFireKeyStart();
             _inputActions.Player.Fire.canceled += (ctx) => _currentItem?.OnFireKeyEnd();
+            _inputActions.Player.Reload.performed += (ctx) => _currentItem?.OnReloadKeyPress();
             _inputActions.Player.PrimarySelect.performed += (ctx) => TrySelectQuickSlot(1);
             _inputActions.Player.SecondarySelect.performed += (ctx) => TrySelectQuickSlot(2);
             _inputActions.Player.TertiarySelect.performed += (ctx) => TrySelectQuickSlot(3);

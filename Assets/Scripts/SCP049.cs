@@ -26,9 +26,9 @@ namespace SCPNewView.Entities.SCP049 {
 
         private IState _currentState;
 
-        public IState ChaseState { get; private set; }
-        public IState IdleState { get; private set; } 
-        public IState SearchState { get; private set; }
+        public ChaseState Chase { get; private set; }
+        public IdleState Idle { get; private set; }
+        public SearchState Search { get; private set; }
 
         private List<Tag> _targetTags;
         private List<Transform> _cachedTargetList;
@@ -42,15 +42,15 @@ namespace SCPNewView.Entities.SCP049 {
             _pathfindingData.path.maxAcceleration = 1000f;
             _pathfindTransform = new GameObject("SCP049 Pathfind Target").transform;
 
-            ChaseState = new ChaseState(this);
-            IdleState = new IdleState(this);
-            SearchState = new SearchState(this);
+            Chase = new ChaseState(this);
+            Idle = new IdleState(this);
+            Search = new SearchState(this);
         }
         private void Start() {
             transform.position = DataPersistenceManager.Current.Scp049Data.Position;
             ReferenceManager refManager = ReferenceManager.Current;
             _targetTags = refManager.FriendlyEntityTags;
-            SetState(IdleState);
+            SetState(Idle);
             UpdateEntityListCache();
             StartCoroutine(TargetDetection());
             EventSystem.NewEntitySpawned += UpdateEntityListCache;
@@ -97,82 +97,82 @@ namespace SCPNewView.Entities.SCP049 {
         private void DebugPathfind() => PathfindToLocation(debug_pathfindingLocation);
         public void OnGameSave() => DataPersistenceManager.Current.Scp049Data.Position = transform.position;
         private void OnValidate() => MemoryTime = Mathf.Clamp(MemoryTime, 0f, Mathf.Infinity);
-    }
-    public interface IState {
-        void OnEnterState();
-        void OnUpdateTick();
-        void OnExitState();
-    }
-    public class ChaseState : IState {
-        private SCP049 _ctx;
-        private Transform _target;
-
-        public ChaseState(SCP049 ctx) {
-            _ctx = ctx;
+        public interface IState {
+            void OnEnterState();
+            void OnUpdateTick();
+            void OnExitState();
         }
+        public class ChaseState : IState {
+            private SCP049 _ctx;
+            private Transform _target;
 
-        public void OnEnterState() {
-            string soundName = $"scp_049_spotted_{Random.Range(0, 4)}";
-            AudioManager.Instance.PlaySoundAtPosition(soundName, _ctx.transform.position);
-            Transform[] targets = _ctx.Targets.ToArray();
-            _target = GetClosestTarget(targets);
-        }
+            public ChaseState(SCP049 ctx) {
+                _ctx = ctx;
+            }
 
-        public void OnExitState() {
-            _target = null;
-        }
+            public void OnEnterState() {
+                string soundName = $"scp_049_spotted_{Random.Range(0, 4)}";
+                AudioManager.Instance.PlaySoundAtPosition(soundName, _ctx.transform.position);
+                Transform[] targets = _ctx.Targets.ToArray();
+                _target = GetClosestTarget(targets);
+            }
 
-        public void OnUpdateTick() {
-            _ctx.PathfindToLocation(_target.position);
-            if (!_ctx.SeesAnyTarget) {
-                _ctx.RememberedPosition = _target.position;
-                _ctx.SetState(_ctx.SearchState);
+            public void OnExitState() {
+                _target = null;
+            }
+
+            public void OnUpdateTick() {
+                _ctx.PathfindToLocation(_target.position);
+                if (!_ctx.SeesAnyTarget) {
+                    _ctx.RememberedPosition = _target.position;
+                    _ctx.SetState(_ctx.Search);
+                }
+            }
+            private Transform GetClosestTarget(Transform[] targets) {
+                targets = targets.OrderBy((x) => Vector2.Distance(_ctx.transform.position, x.position)).ToArray();
+                return targets[0];
             }
         }
-        private Transform GetClosestTarget(Transform[] targets) {
-            targets = targets.OrderBy((x) => Vector2.Distance(_ctx.transform.position, x.position)).ToArray();
-            return targets[0];
-        }
-    }
-    public class SearchState : IState {
-        private SCP049 _ctx;
-        private Timer _memoryTimer;
-        public SearchState(SCP049 ctx) => _ctx = ctx;
+        public class SearchState : IState {
+            private SCP049 _ctx;
+            private Timer _memoryTimer;
+            public SearchState(SCP049 ctx) => _ctx = ctx;
 
-        public void OnEnterState() {
-            Debug.Log("Entering search state", _ctx);
-            _memoryTimer = new Timer(() => {
-                _ctx.SetState(_ctx.IdleState);
-            }, _ctx.MemoryTime);
-        }
+            public void OnEnterState() {
+                _memoryTimer = new Timer(() => {
+                    _ctx.SetState(_ctx.Idle);
+                }, _ctx.MemoryTime);
+            }
 
-        public void OnExitState() {
-            Debug.Log("Exiting search state", _ctx);
-            _ctx.RememberedPosition = Vector2.zero;
-            _memoryTimer.Cancel();
-        }
+            public void OnExitState() {
+                _ctx.RememberedPosition = Vector2.zero;
+                _memoryTimer.Cancel();
+            }
 
-        public void OnUpdateTick() {
-            _ctx.PathfindToLocation(_ctx.RememberedPosition);
-            if (_ctx.SeesAnyTarget) {
-                _ctx.SetState(_ctx.ChaseState);
+            public void OnUpdateTick() {
+                _ctx.PathfindToLocation(_ctx.RememberedPosition);
+                if (_ctx.SeesAnyTarget) {
+                    _ctx.SetState(_ctx.Chase);
+                }
             }
         }
-    }
-    public class IdleState : IState {
-        private SCP049 _ctx;
-        public IdleState(SCP049 ctx) => _ctx = ctx;
-        public void OnEnterState() {
-            return;
-        }
+        public class IdleState : IState {
+            private SCP049 _ctx;
+            public IdleState(SCP049 ctx) => _ctx = ctx;
+            public void OnEnterState() {
+                Debug.Log("SCP049 : Entering Idle State");
+                return;
+            }
 
-        public void OnExitState() {
-            return;
-        }
+            public void OnExitState() {
+                Debug.Log("SCP049 : Exiting Idle State");
+                return;
+            }
         
-        public void OnUpdateTick() {
-            if (_ctx.SeesAnyTarget) {
-                _ctx.SetState(_ctx.ChaseState);
+            public void OnUpdateTick() {
+                if (_ctx.SeesAnyTarget) {
+                    _ctx.SetState(_ctx.Chase);
+                }
             }
         }
     }
