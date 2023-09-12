@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -9,7 +8,7 @@ namespace SCPNewView {
         private static List<Transform> s_lightableObjects = new List<Transform>();
         public static event Action LightableObjectsListChanged;
 
-        Dictionary<Light2D, bool> IsLitBy { get; }
+        Dictionary<Light, bool> IsLitBy { get; }
 
         public static void AddLightableObject(Transform newObj) {
            if (s_lightableObjects.Contains(newObj)) return;

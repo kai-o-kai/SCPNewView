@@ -160,12 +160,10 @@ namespace SCPNewView.Entities.SCP049 {
             private SCP049 _ctx;
             public IdleState(SCP049 ctx) => _ctx = ctx;
             public void OnEnterState() {
-                Debug.Log("SCP049 : Entering Idle State");
                 return;
             }
 
             public void OnExitState() {
-                Debug.Log("SCP049 : Exiting Idle State");
                 return;
             }
         

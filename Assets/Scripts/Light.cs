@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LightType = UnityEngine.Rendering.Universal.Light2D.LightType;
 using UnityEngine.Rendering.Universal;
 using System;
-using Unity.Collections;
 using SCPNewView.Utils;
 
 namespace SCPNewView {
@@ -12,7 +10,6 @@ namespace SCPNewView {
     public class Light : MonoBehaviour {
         public static Light[] Lights => s_lights.ToArray();
         public static event Action LightListChanged;
-
 
         private static List<Light> s_lights = new List<Light>();
         
@@ -31,7 +28,7 @@ namespace SCPNewView {
             ILightable.LightableObjectsListChanged += OnLightableObjectsListChanged;
             if (_type == LightType.Global) {
                 foreach (var lightable in _lightableObjects) {
-                    lightable.GetComponent<ILightable>().IsLitBy[_light] = true;
+                    lightable.GetComponent<ILightable>().IsLitBy[this] = true;
                     continue;
                 }
             }
@@ -48,12 +45,12 @@ namespace SCPNewView {
                     float distance = Vector2.Distance(transform.position, lightable.position);
                     ILightable lightableObjectInterface = lightable.GetComponent<ILightable>();
                     if (distance > radius) {
-                        lightableObjectInterface.IsLitBy[_light] = false;
+                        lightableObjectInterface.IsLitBy[this] = false;
                     } else {
                         Vector2 dirToLightable = lightable.position - transform.position;
                         float angleToLightable = Utilities.DirToAngle(dirToLightable);
                         bool isInLightFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
-                        lightableObjectInterface.IsLitBy[_light] = isInLightFOV;
+                        lightableObjectInterface.IsLitBy[this] = isInLightFOV;
                     }
                 }
             }
