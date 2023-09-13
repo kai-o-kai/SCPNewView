@@ -7,10 +7,8 @@ using Random = UnityEngine.Random;
 using UnityEngine;
 using Timer = SCPNewView.Utils.Timer;
 using Pathfinding;
-using System;
 using SCPNewView.Saving;
 using SCPNewView.Audio;
-using Unity.VisualScripting;
 
 namespace SCPNewView.Entities.SCP049 {
     [RequireComponent(typeof(Seeker), typeof(AIPath), typeof(AIDestinationSetter))]

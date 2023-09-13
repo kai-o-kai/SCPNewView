@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Light = SCPNewView.Light;
 
-namespace SCPNewView {
+namespace SCPNewView.Entities.SCP173 {
     public class SCP173 : MonoBehaviour, ILightable {
         public Dictionary<Light, bool> IsLitBy { get; } = new Dictionary<Light, bool>();
 
