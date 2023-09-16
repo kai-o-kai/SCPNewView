@@ -3,17 +3,21 @@ using System.Linq;
 using UnityEngine;
 
 namespace SCPNewView.Entities.SCP173 {
-    public class SCP173 : MonoBehaviour, ILightable {
+    public class SCP173 : MonoBehaviour, ILightable, ILookable {
         public Dictionary<Light, bool> IsLitBy { get; } = new Dictionary<Light, bool>();
+
+        public Dictionary<Looker, bool> IsLookedAtBy { get; } = new Dictionary<Looker, bool>();
 
         private void Awake() {
             ILightable.AddLightableObject(transform);
+            ILookable.AddLookable(this);
         }
         private void Start() {
             Light.LightListChanged += UpdateLightsDic;
         }
         private void OnDestroy() {
             ILightable.RemoveLightableObject(transform);
+            ILookable.RemoveLookable(this);
             Light.LightListChanged -= UpdateLightsDic;
         }
         private void UpdateLightsDic() {
