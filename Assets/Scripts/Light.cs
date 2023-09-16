@@ -53,7 +53,6 @@ namespace SCPNewView {
                     } else {
                         Vector2 dirToLightable = lightable.position - transform.position;
                         float angleToLightable = Utilities.DirToAngle(dirToLightable) + 90f;
-                        Debug.Log($"Angle To Lightable: {angleToLightable}");
                         bool isInLightFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
                         lightableObjectInterface.IsLitBy[this] = isInLightFOV;
                     }

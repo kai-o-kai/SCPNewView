@@ -4,20 +4,38 @@ using UnityEngine;
 
 namespace SCPNewView {
     public class Looker : MonoBehaviour {
-        public static List<ILookable> Lookables = new List<ILookable>();
+        public static List<Transform> Lookables = new List<Transform>();
 
         [Range(0f, 360f)] [SerializeField] private float _fov;
         [SerializeField] private float _lookDistance;
 
 
-        private void Awake() {
+        private void Start() {
             AddLooker(this);
         }
         private void OnDestroy() {
             RemoveLooker(this);
         }
         private void Update() {
-            
+            float zAngle = transform.eulerAngles.z;
+            float minAngle = zAngle - (_fov / 2);
+            float maxAngle = zAngle + (_fov / 2);
+            maxAngle += 90;
+            minAngle += 90;
+            minAngle = Utilities.Clamp0360(minAngle);
+            maxAngle = Utilities.Clamp0360(maxAngle);
+            foreach (var lookable in Lookables) {
+                float distance = Vector2.Distance(transform.position, lookable.position);
+                ILookable lightableObjectInterface = lookable.GetComponent<ILookable>();
+                if (distance > _lookDistance) {
+                    lightableObjectInterface.IsLookedAtBy[this] = false;
+                } else {
+                    Vector2 dirToLightable = lookable.position - transform.position;
+                    float angleToLightable = Utilities.DirToAngle(dirToLightable) + 90f;
+                    bool isInLookFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
+                    lightableObjectInterface.IsLookedAtBy[this] = isInLookFOV;
+                }
+            }
         }
         private void OnValidate() {
             _lookDistance = Mathf.Clamp(_lookDistance, 0, Mathf.Infinity);
@@ -36,12 +54,12 @@ namespace SCPNewView {
 
         private static void AddLooker(Looker l) {
             foreach (var lookable in Lookables) {
-                lookable.IsLookedAtBy.Add(l, false);
+                lookable.GetComponent<ILookable>().IsLookedAtBy.Add(l, false);
             }
         }
         private static void RemoveLooker(Looker l) {
             foreach (var lookable in Lookables) {
-                lookable.IsLookedAtBy.Remove(l);
+                lookable.GetComponent<ILookable>().IsLookedAtBy.Remove(l);
             }
         }
 

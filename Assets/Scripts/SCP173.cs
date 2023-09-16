@@ -8,16 +8,30 @@ namespace SCPNewView.Entities.SCP173 {
 
         public Dictionary<Looker, bool> IsLookedAtBy { get; } = new Dictionary<Looker, bool>();
 
+        [SerializeField] private List<Looker> _lookedAtBy = new();
+        [SerializeField] private List<Looker> _notLookedAtBy = new();
+
         private void Awake() {
             ILightable.AddLightableObject(transform);
-            ILookable.AddLookable(this);
+            ILookable.AddLookable(transform);
         }
         private void Start() {
             Light.LightListChanged += UpdateLightsDic;
         }
+        private void Update() {
+            _lookedAtBy.Clear();
+            _notLookedAtBy.Clear();
+            foreach (var a in IsLookedAtBy) {
+                if (a.Value) {
+                    _lookedAtBy.Add(a.Key);
+                } else {
+                    _notLookedAtBy.Add(a.Key);
+                }
+            }
+        }
         private void OnDestroy() {
             ILightable.RemoveLightableObject(transform);
-            ILookable.RemoveLookable(this);
+            ILookable.RemoveLookable(transform);
             Light.LightListChanged -= UpdateLightsDic;
         }
         private void UpdateLightsDic() {
