@@ -53,3 +53,6 @@ TagManager:
   - name: Bullets
     uniqueID: 2755303089
     locked: 0
+  - name: EntityLightingChild
+    uniqueID: 1765807627
+    locked: 0

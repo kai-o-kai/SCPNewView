@@ -6,9 +6,10 @@ namespace SCPNewView {
     public class Looker : MonoBehaviour {
         public static List<Transform> Lookables = new List<Transform>();
 
+        public bool Enabled { get; set; } = true;
+
         [Range(0f, 360f)] [SerializeField] private float _fov;
         [SerializeField] private float _lookDistance;
-
 
         private void Start() {
             AddLooker(this);
@@ -25,15 +26,20 @@ namespace SCPNewView {
             minAngle = Utilities.Clamp0360(minAngle);
             maxAngle = Utilities.Clamp0360(maxAngle);
             foreach (var lookable in Lookables) {
-                float distance = Vector2.Distance(transform.position, lookable.position);
-                ILookable lightableObjectInterface = lookable.GetComponent<ILookable>();
-                if (distance > _lookDistance) {
-                    lightableObjectInterface.IsLookedAtBy[this] = false;
+                if (Enabled) {
+                    float distance = Vector2.Distance(transform.position, lookable.position);
+                    ILookable lightableObjectInterface = lookable.GetComponent<ILookable>();
+                    if (distance > _lookDistance) {
+                        lightableObjectInterface.IsLookedAtBy[this] = false;
+                    } else {
+                        Vector2 dirToLightable = lookable.position - transform.position;
+                        float angleToLightable = Utilities.DirToAngle(dirToLightable) + 90f;
+                        bool isInLookFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
+                        lightableObjectInterface.IsLookedAtBy[this] = isInLookFOV;
+                    }
                 } else {
-                    Vector2 dirToLightable = lookable.position - transform.position;
-                    float angleToLightable = Utilities.DirToAngle(dirToLightable) + 90f;
-                    bool isInLookFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
-                    lightableObjectInterface.IsLookedAtBy[this] = isInLookFOV;
+                    ILookable lightableObjectInterface = lookable.GetComponent<ILookable>();
+                    lightableObjectInterface.IsLookedAtBy[this] = false;
                 }
             }
         }

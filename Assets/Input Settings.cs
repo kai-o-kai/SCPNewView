@@ -100,6 +100,15 @@ namespace SCPNewView
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Blink"",
+                    ""type"": ""Button"",
+                    ""id"": ""13c48114-95fb-4a7e-b90a-a27e9ddd361e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -300,6 +309,17 @@ namespace SCPNewView
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9bbcdd7e-94ce-44a9-a575-c2309aa35a52"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Blink"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -316,6 +336,7 @@ namespace SCPNewView
             m_Player_SecondarySelect = m_Player.FindAction("SecondarySelect", throwIfNotFound: true);
             m_Player_TertiarySelect = m_Player.FindAction("TertiarySelect", throwIfNotFound: true);
             m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
+            m_Player_Blink = m_Player.FindAction("Blink", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -385,6 +406,7 @@ namespace SCPNewView
         private readonly InputAction m_Player_SecondarySelect;
         private readonly InputAction m_Player_TertiarySelect;
         private readonly InputAction m_Player_Reload;
+        private readonly InputAction m_Player_Blink;
         public struct PlayerActions
         {
             private @InputSettings m_Wrapper;
@@ -397,6 +419,7 @@ namespace SCPNewView
             public InputAction @SecondarySelect => m_Wrapper.m_Player_SecondarySelect;
             public InputAction @TertiarySelect => m_Wrapper.m_Player_TertiarySelect;
             public InputAction @Reload => m_Wrapper.m_Player_Reload;
+            public InputAction @Blink => m_Wrapper.m_Player_Blink;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -430,6 +453,9 @@ namespace SCPNewView
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
+                @Blink.started += instance.OnBlink;
+                @Blink.performed += instance.OnBlink;
+                @Blink.canceled += instance.OnBlink;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -458,6 +484,9 @@ namespace SCPNewView
                 @Reload.started -= instance.OnReload;
                 @Reload.performed -= instance.OnReload;
                 @Reload.canceled -= instance.OnReload;
+                @Blink.started -= instance.OnBlink;
+                @Blink.performed -= instance.OnBlink;
+                @Blink.canceled -= instance.OnBlink;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -485,6 +514,7 @@ namespace SCPNewView
             void OnSecondarySelect(InputAction.CallbackContext context);
             void OnTertiarySelect(InputAction.CallbackContext context);
             void OnReload(InputAction.CallbackContext context);
+            void OnBlink(InputAction.CallbackContext context);
         }
     }
 }
