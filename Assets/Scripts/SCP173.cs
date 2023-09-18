@@ -10,6 +10,9 @@ namespace SCPNewView.Entities.SCP173 {
         public Dictionary<Light, bool> IsLitBy { get; } = new Dictionary<Light, bool>();
         public Dictionary<Looker, bool> IsLookedAtBy { get; } = new Dictionary<Looker, bool>();
 
+        private Transform _closestTarget => _targets.Count != 0 ? _targets[0] : null;
+        private bool _hasTargets => _targets.Count != 0;
+
         private List<Transform> _cachedPossibleTargetList = new();
         private List<Transform> _targets = new();
         private List<Tag> _targetTags;
@@ -21,9 +24,9 @@ namespace SCPNewView.Entities.SCP173 {
         private void Start() {
             _targetTags = ReferenceManager.Current.FriendlyEntityTags;
             Light.LightListChanged += UpdateLightsDic;
-            EventSystem.NewEntitySpawned += UpdateTargetsListCache;
-
             UpdateTargetsListCache();
+            EventSystem.NewEntitySpawned += UpdateTargetsListCache;
+            StartCoroutine(TargetDetecction());
         }
         private void Update() {
         }
@@ -48,8 +51,11 @@ namespace SCPNewView.Entities.SCP173 {
             }
         }
         private void UpdateTargetsListCache() {
+            Debug.Log("Updating Target List Cache....", this);
             List<TagList> targets = FindObjectsOfType<TagList>()?.Where((tl) => tl.HasAnyTag(_targetTags))?.ToList();
-            _cachedPossibleTargetList.Select(x => x.transform).ToList();
+            Debug.Log($"Targets: {string.Join(',', targets)}");
+            _cachedPossibleTargetList = targets.Select(x => x.transform).ToList();
+            _cachedPossibleTargetList = _cachedPossibleTargetList.OrderBy(x => Vector2.Distance(transform.position, x.position)).ToList();
         }
         private IEnumerator TargetDetecction() {
             while (true) {
