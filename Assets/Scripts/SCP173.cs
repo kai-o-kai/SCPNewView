@@ -4,8 +4,10 @@ using System.Linq;
 using SCPNewView.Management;
 using UnityEngine;
 using SCPNewView.Utils;
+using Pathfinding;
 
 namespace SCPNewView.Entities.SCP173 {
+    [RequireComponent(typeof(AIDestinationSetter), typeof(AIDestinationSetter))]
     public class SCP173 : MonoBehaviour, ILightable, ILookable {
         public Dictionary<Light, bool> IsLitBy { get; } = new Dictionary<Light, bool>();
         public Dictionary<Looker, bool> IsLookedAtBy { get; } = new Dictionary<Looker, bool>();
@@ -13,15 +15,27 @@ namespace SCPNewView.Entities.SCP173 {
         private Transform _closestTarget => _targets.Count != 0 ? _targets[0] : null;
         private bool _hasTargets => _targets.Count != 0;
 
+        private bool _isLit => IsLitBy.Any((x) => x.Value == true);
+        private bool _isLooked => IsLookedAtBy.Any((x) => x.Value == true);
+
         private List<Transform> _cachedPossibleTargetList = new();
         private List<Transform> _targets = new();
         private List<Tag> _targetTags;
 
+        private AIPath _path;
+        private AIDestinationSetter _dest;
+        private Transform _pathfindingObj;
+
+        [SerializeField] private float _speed;
+
         private void Awake() {
             ILightable.AddLightableObject(transform);
             ILookable.AddLookable(transform);
+            _path = GetComponent<AIPath>();
+            _dest = GetComponent<AIDestinationSetter>();
         }
         private void Start() {
+            _pathfindingObj = new GameObject("SCP173 Pathfind Obj").transform;
             _targetTags = ReferenceManager.Current.FriendlyEntityTags;
             Light.LightListChanged += UpdateLightsDic;
             UpdateTargetsListCache();
@@ -29,6 +43,16 @@ namespace SCPNewView.Entities.SCP173 {
             StartCoroutine(TargetDetecction());
         }
         private void Update() {
+            if (!_isLit || !_isLooked) {
+                _path.maxSpeed = _speed;
+            } else if (_isLit && _isLooked) {
+                _path.maxSpeed = 0f;
+            }
+            if (_hasTargets) {
+                PathfindToLocation(_closestTarget.position);
+            } else {
+                _dest.target = null;
+            }
         }
         private void OnDestroy() {
             ILightable.RemoveLightableObject(transform);
@@ -51,9 +75,7 @@ namespace SCPNewView.Entities.SCP173 {
             }
         }
         private void UpdateTargetsListCache() {
-            Debug.Log("Updating Target List Cache....", this);
             List<TagList> targets = FindObjectsOfType<TagList>()?.Where((tl) => tl.HasAnyTag(_targetTags))?.ToList();
-            Debug.Log($"Targets: {string.Join(',', targets)}");
             _cachedPossibleTargetList = targets.Select(x => x.transform).ToList();
             _cachedPossibleTargetList = _cachedPossibleTargetList.OrderBy(x => Vector2.Distance(transform.position, x.position)).ToList();
         }
@@ -77,6 +99,10 @@ namespace SCPNewView.Entities.SCP173 {
                 }
                 yield return new WaitForSeconds(0.5f);
             }
+        }
+        private void PathfindToLocation(Vector2 loc) {
+            _pathfindingObj.position = loc;
+            _dest.target = _pathfindingObj;
         }
     }
 }
