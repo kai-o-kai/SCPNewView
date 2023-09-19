@@ -31,13 +31,21 @@ namespace SCPNewView {
                     ILookable lightableObjectInterface = lookable.GetComponent<ILookable>();
                     if (distance > _lookDistance) {
                         lightableObjectInterface.IsLookedAtBy[this] = false;
-                    } else {
-                        Vector2 dirToLightable = lookable.position - transform.position;
-                        float angleToLightable = Utilities.DirToAngle(dirToLightable) + 90f;
-                        angleToLightable = Utilities.Clamp0360(angleToLightable);
-                        bool isInLookFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
-                        lightableObjectInterface.IsLookedAtBy[this] = isInLookFOV;
+                        continue;
                     }
+                    Vector2 dirToLightable = lookable.position - transform.position;
+                    int mask = Layers.PlayerFiredBullet;
+                    RaycastHit2D rHit = Physics2D.Raycast(transform.position, dirToLightable, distance);
+                    if (rHit.collider != null) {
+                        if (rHit.collider.transform != lookable) {
+                            lightableObjectInterface.IsLookedAtBy[this] = false;
+                            continue;
+                        }
+                    } 
+                    float angleToLightable = Utilities.DirToAngle(dirToLightable) + 90f;
+                    angleToLightable = Utilities.Clamp0360(angleToLightable);
+                    bool isInLookFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
+                    lightableObjectInterface.IsLookedAtBy[this] = isInLookFOV;
                 } else {
                     ILookable lightableObjectInterface = lookable.GetComponent<ILookable>();
                     lightableObjectInterface.IsLookedAtBy[this] = false;

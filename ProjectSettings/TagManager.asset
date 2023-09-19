@@ -8,7 +8,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - PlayerFiredBullet
+  - Bullet
   - Water
   - UI
   - Wall
@@ -40,6 +40,9 @@ TagManager:
   m_SortingLayers:
   - name: BG
     uniqueID: 1611539111
+    locked: 0
+  - name: Floor
+    uniqueID: 2547294501
     locked: 0
   - name: Default
     uniqueID: 0

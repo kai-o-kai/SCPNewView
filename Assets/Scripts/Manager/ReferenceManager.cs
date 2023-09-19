@@ -27,5 +27,7 @@ namespace SCPNewView {
 
         [SerializeField] private GameObject bulletPrefab;
         [SerializeField] private List<Tag> friendlyEntityTags;
+        [field: SerializeField] public Color MinFloorTileColor { get; private set; }
+        [field: SerializeField] public Color MaxFloorTileColor { get; private set; }
     }
 }

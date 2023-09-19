@@ -126,7 +126,7 @@ namespace SCPNewView.Inventory.InventoryItems {
         public static Dictionary<string, IEquippableItem> Items = new Dictionary<string, IEquippableItem>() {
             { "g19", _g19 }
         };
-        private static IEquippableItem _g19 => new SemiAutomaticStandardFirearm();
+        private static IEquippableItem _g19 => new SemiAutomaticStandardFirearm(equipSound: "pistol_equip", fireSound: "pistol_shot");
     }
     public static class TertiarySlots {
 

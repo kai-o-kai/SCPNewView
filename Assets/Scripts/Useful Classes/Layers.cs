@@ -4,6 +4,6 @@ using UnityEngine;
 
 namespace SCPNewView.Utils {
     public static class Layers {
-        public static int PlayerFiredBullet = LayerMask.NameToLayer("PlayerFiredBullet");
+        public static int PlayerFiredBullet = LayerMask.NameToLayer("Ignore Raycast");
     }
 }
