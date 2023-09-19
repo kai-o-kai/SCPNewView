@@ -11,6 +11,8 @@ namespace SCPNewView {
         [SerializeField] private float _blinkDuration;
         [SerializeField] private float _blinkDurationVariation;
 
+        [SerializeField] private bool _isPlayer;
+
 
         private float _timer;
         private Looker _looker;
@@ -19,11 +21,15 @@ namespace SCPNewView {
         private void Awake() {
             _timer = _timeBetweenBlinks + Random.Range(-_blinkTimerVariation, _blinkTimerVariation);
             _looker = GetComponent<Looker>();
-            _inputSettings = new InputSettings();
-            _inputSettings.Player.Blink.performed += (_) => Blink();
+            if (_isPlayer) {
+                _inputSettings = new InputSettings();
+                _inputSettings.Player.Blink.performed += (_) => Blink();
+            }
         }
         private void OnEnable() {
-            _inputSettings.Enable();
+            if (_isPlayer) {
+                _inputSettings.Enable();
+            }
         }
         private void Update() {
             if (_timer <= 0) {
@@ -33,10 +39,14 @@ namespace SCPNewView {
             }
         }
         private void OnDisable() {
-            _inputSettings.Disable();
+            if (_isPlayer) {
+                _inputSettings.Disable();
+            }
         }
         private async void Blink() {
-            Debug.Log("Beginning Blink");
+            if (_isPlayer) {
+                FadeBlackScreen.Instance.FadeToBlack(20f);
+            }
             _timer = Mathf.Infinity;
             _looker.Enabled = false;
             await Task.Delay(Mathf.RoundToInt(_blinkDuration * 1000));
@@ -44,7 +54,7 @@ namespace SCPNewView {
                 if (!_inputSettings.Player.Blink.IsPressed()) {
                     _timer = _timeBetweenBlinks + Random.Range(-_blinkTimerVariation, _blinkTimerVariation);
                     _looker.Enabled = true;
-                    Debug.Log("Ending Blink");
+                    FadeBlackScreen.Instance.UnFade(20f);
                     return;
                 } else {
                     await Task.Yield();

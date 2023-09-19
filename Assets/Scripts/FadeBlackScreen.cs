@@ -35,23 +35,50 @@ namespace SCPNewView {
 
         private bool _isFaded;
         private Image _img;
+        private Coroutine _fadeUnfadeRoutine;
         
         private void Awake() {
             DontDestroyOnLoad(transform.parent);
+            s_instance = this;
             _img = GetComponent<Image>();
         }
-        public void FadeToBlack(float fadeTimeSeconds) {
+        public void FadeToBlack(float fadeSpeed) {
             if (_isFaded) return;
-            StartCoroutine(C_FadeBlack(fadeTimeSeconds));
+
+            if (_fadeUnfadeRoutine != null) {
+                StopCoroutine(_fadeUnfadeRoutine);
+                _fadeUnfadeRoutine = null;
+            }
+            _fadeUnfadeRoutine = StartCoroutine(C_FadeBlack(fadeSpeed));
         }
-        private IEnumerator C_FadeBlack(float fadeTimeSeconds) {
-            float lerpValue = 0;
-            while (_img.color .a < 1) {
-                _img.color = Color.Lerp(_img.color, Color.black, Time.deltaTime * fadeTimeSeconds);
-                yield return new WaitForEndOfFrame();
-            } 
-            
+        private IEnumerator C_FadeBlack(float fadeSpeed) {
             _isFaded = true;
+            StopCoroutine(nameof(C_UnFade));
+            while (_img.color.a < 0.9f) {
+                _img.color = Color.Lerp(_img.color, Color.black, Time.deltaTime * fadeSpeed);
+                yield return new WaitForEndOfFrame();
+            }
+            _img.color = Color.black;
+            yield break;
+        }
+        public void UnFade(float fadeSpeed) {
+            if (!_isFaded) return;
+
+            if (_fadeUnfadeRoutine != null) {
+                StopCoroutine(_fadeUnfadeRoutine);
+                _fadeUnfadeRoutine = null;
+            }
+            _fadeUnfadeRoutine = StartCoroutine(C_UnFade(fadeSpeed));
+        }
+        private IEnumerator C_UnFade(float fadeSpeed) {
+            _isFaded = false;
+            StopCoroutine(nameof(C_FadeBlack));
+            while (_img.color.a > 0.1f) {
+                _img.color = Color.Lerp(_img.color, Color.clear, Time.deltaTime * fadeSpeed);
+                yield return new WaitForEndOfFrame();
+            }
+            _img.color = Color.clear;
+            yield break;
         }
     }
 }
