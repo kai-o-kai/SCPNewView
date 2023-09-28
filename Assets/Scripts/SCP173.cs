@@ -45,8 +45,10 @@ namespace SCPNewView.Entities.SCP173 {
         private void Update() {
             if (!_isLit || !_isLooked) {
                 _path.maxSpeed = _speed;
+                _path.rotationSpeed = Mathf.Infinity;
             } else if (_isLit && _isLooked) {
                 _path.maxSpeed = 0f;
+                _path.rotationSpeed = 0f;
             }
             if (_hasTargets) {
                 PathfindToLocation(_closestTarget.position);
