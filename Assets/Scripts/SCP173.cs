@@ -17,6 +17,7 @@ namespace SCPNewView.Entities.SCP173 {
 
         private bool _isLit => IsLitBy.Any((x) => x.Value == true);
         private bool _isLooked => IsLookedAtBy.Any((x) => x.Value == true);
+        private bool _readyToSnap => _snapTimer <= 0f && _snapForgivenessTimer <= 0f;
 
         private List<Transform> _cachedPossibleTargetList = new();
         private List<Transform> _targets = new();
@@ -27,6 +28,12 @@ namespace SCPNewView.Entities.SCP173 {
         private Transform _pathfindingObj;
 
         [SerializeField] private float _speed;
+        [SerializeField] private float _snapDistance;
+        [SerializeField] private float _secondsBetweenSnaps;
+        [SerializeField] private float _snapForgivenessTime;
+
+        private float _snapTimer;
+        private float _snapForgivenessTimer;
 
         private void Awake() {
             ILightable.AddLightableObject(transform);
@@ -52,9 +59,23 @@ namespace SCPNewView.Entities.SCP173 {
             }
             if (_hasTargets) {
                 PathfindToLocation(_closestTarget.position);
+                float distanceToTarget = Vector2.Distance(transform.position, _closestTarget.position);
+                if (distanceToTarget < _snapDistance) {
+                    if (_closestTarget.TryGetComponent<IDamagable>(out var damagable)) {
+                        if (_readyToSnap) {
+                            damagable.OnSnapBy173(this);
+                            _snapTimer = _secondsBetweenSnaps;
+                            _snapForgivenessTimer = _snapForgivenessTime;
+                        } else {
+                            _snapForgivenessTimer -= Time.deltaTime;
+                        }
+                    }
+                }
             } else {
                 _dest.target = null;
+                _snapForgivenessTimer = _snapForgivenessTime;
             }
+            _snapTimer -= Time.deltaTime;
         }
         private void OnDestroy() {
             ILightable.RemoveLightableObject(transform);
@@ -105,6 +126,15 @@ namespace SCPNewView.Entities.SCP173 {
         private void PathfindToLocation(Vector2 loc) {
             _pathfindingObj.position = loc;
             _dest.target = _pathfindingObj;
+        }
+        private void OnDrawGizmosSelected() {
+            Gizmos.DrawWireSphere(transform.position, _snapDistance);
+        }
+        private void OnValidate() {
+            _speed = Mathf.Clamp(_speed, 0f, Mathf.Infinity);
+            _snapDistance = Mathf.Clamp(_snapDistance, 0f, Mathf.Infinity);
+            _secondsBetweenSnaps = Mathf.Clamp(_secondsBetweenSnaps, 0f, Mathf.Infinity);
+            _snapForgivenessTime = Mathf.Clamp(_snapForgivenessTime, 0f, Mathf.Infinity);
         }
     }
 }

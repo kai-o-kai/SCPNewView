@@ -14,5 +14,8 @@ namespace SCPNewView {
         private void Awake() {
             s_instance = this;
         }
+        public void PromptInput(InputAction toPrompt) {
+
+        }
     }
 }
