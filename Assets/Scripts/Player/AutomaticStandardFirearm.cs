@@ -53,7 +53,7 @@ namespace SCPNewView.Inventory.InventoryItems {
         public void OnFireKeyEnd() {
             _fireKeyIsPressed = false;
             Timer.RemoveTimersWithCallback(Fire);
-            AudioManager.Instance.StopSoundByName(_fireSound);
+            //AudioManager.Instance.StopSoundByName(_fireSound);
         }
         public async void OnReloadKeyPress() {
             if (!_magAvailable) {

@@ -4,7 +4,8 @@ using UnityEngine;
 namespace SCPNewView {
     public interface ILookable {
         public Dictionary<Looker, bool> IsLookedAtBy { get; }
-        
+        public bool LookableThroughScrambles { get; }
+
         public static void AddLookable(Transform il) {
             Looker.Lookables.Add(il);
         }

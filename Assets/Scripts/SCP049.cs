@@ -13,6 +13,9 @@ using SCPNewView.Audio;
 namespace SCPNewView.Entities.SCP049 {
     [RequireComponent(typeof(Seeker), typeof(AIPath), typeof(AIDestinationSetter))]
     public class SCP049 : MonoBehaviour, IDataPersisting {
+        public const int NUMBEROFSEARCHVOICELINES = 6;
+        public const int NUMBEROFSPOTTEDVOICELINES = 10;
+
         public bool SeesAnyTarget => _validTargetList.Count != 0;
         public List<Transform> Targets => _validTargetList;
         public (Seeker Seeker, AIPath Path, AIDestinationSetter Dest) PathfindingData => _pathfindingData;
@@ -109,7 +112,7 @@ namespace SCPNewView.Entities.SCP049 {
             }
 
             public void OnEnterState() {
-                string soundName = $"scp_049_spotted_{Random.Range(0, 4)}";
+                string soundName = $"scp_049_spotted_{Random.Range(1, SCP049.NUMBEROFSPOTTEDVOICELINES + 1)}";
                 AudioManager.Instance.PlaySoundAtPosition(soundName, _ctx.transform.position);
                 Transform[] targets = _ctx.Targets.ToArray();
                 _target = GetClosestTarget(targets);
@@ -140,6 +143,8 @@ namespace SCPNewView.Entities.SCP049 {
                 _memoryTimer = new Timer(() => {
                     _ctx.SetState(_ctx.Idle);
                 }, _ctx.MemoryTime);
+                string soundName = $"scp_049_search_{Random.Range(1, SCP049.NUMBEROFSEARCHVOICELINES + 1)}";
+                AudioManager.Instance.PlaySoundAtPosition(soundName, _ctx.transform.position);
             }
 
             public void OnExitState() {

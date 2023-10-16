@@ -19,6 +19,8 @@ namespace SCPNewView.Entities.SCP173 {
         private bool _isLooked => IsLookedAtBy.Any((x) => x.Value == true);
         private bool _readyToSnap => _snapTimer <= 0f && _snapForgivenessTimer <= 0f;
 
+        public bool LookableThroughScrambles { get; } = true;
+
         private List<Transform> _cachedPossibleTargetList = new();
         private List<Transform> _targets = new();
         private List<Tag> _targetTags;

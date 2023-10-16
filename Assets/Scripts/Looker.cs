@@ -7,6 +7,7 @@ namespace SCPNewView {
         public static List<Transform> Lookables = new List<Transform>();
 
         public bool Enabled { get; set; } = true;
+        public bool ScramblerGogglesOn { get; set; }
 
         [Range(0f, 360f)] [SerializeField] private float _fov;
         [SerializeField] private float _lookDistance;
@@ -45,7 +46,16 @@ namespace SCPNewView {
                     float angleToLightable = Utilities.DirToAngle(dirToLightable) + 90f;
                     angleToLightable = Utilities.Clamp0360(angleToLightable);
                     bool isInLookFOV = (angleToLightable < maxAngle) && (angleToLightable > minAngle);
-                    lightableObjectInterface.IsLookedAtBy[this] = isInLookFOV;
+                    if (!ScramblerGogglesOn) {
+                        lightableObjectInterface.IsLookedAtBy[this] = isInLookFOV;
+                    } else {
+                        // TODO : Scrambler Failure
+                        if (lightableObjectInterface.LookableThroughScrambles) {
+                            lightableObjectInterface.IsLookedAtBy[this] = isInLookFOV;
+                        } else {
+                            lightableObjectInterface.IsLookedAtBy[this] = false;
+                        }
+                    }
                 } else {
                     ILookable lightableObjectInterface = lookable.GetComponent<ILookable>();
                     lightableObjectInterface.IsLookedAtBy[this] = false;
